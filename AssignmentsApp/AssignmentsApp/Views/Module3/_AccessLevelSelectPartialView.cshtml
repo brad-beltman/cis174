@@ -1,0 +1,17 @@
+﻿<table class="table">
+    <thead>
+        <tr>
+            <th>Please specify your access level</th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr>
+                <td>
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        <a asp-action="Index" asp-route-id="@i">@i</a>
+                    }
+                </td>
+            </tr>
+    </tbody>
+</table>

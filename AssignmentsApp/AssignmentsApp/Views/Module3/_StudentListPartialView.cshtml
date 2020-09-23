@@ -1,0 +1,29 @@
+﻿<table class="table">
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            @if (Model.AccessLevel >= 8)
+            {
+                <th>Grade</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Student student in Model.Students)
+        {
+            <tr>
+                <td>
+                    @student.FirstName @student.LastName
+                </td>
+                @if (Model.AccessLevel >= 8)
+                {
+                <td>
+                    @student.Grade
+                </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<partial name="_AccessLevelSelectPartialView" />

@@ -1,0 +1,33 @@
+﻿@model StudentListViewModel
+
+<h1>Module 3 - Topic 4</h1>
+
+@{
+    if (Model.AccessLevel == 0)
+    {
+        <p>
+            <partial name="_AccessLevelSelectPartialView" />
+        </p>
+    }
+}
+
+@{
+    if (Model.AccessLevel <= 2 && Model.AccessLevel > 0)
+    {
+        <p>
+            <partial name="_NoAccessPartialView" />
+        </p>
+    }
+    else if (Model.AccessLevel >= 3)
+    {
+        @if (Model.AccessLevel >= 8)
+        {
+            <h2>Hello Admin</h2>
+        }
+        <p>
+            <partial name="_StudentListPartialView" />
+        </p>
+
+    }
+}
+
