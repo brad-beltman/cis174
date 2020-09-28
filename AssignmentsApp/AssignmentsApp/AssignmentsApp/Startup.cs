@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 using Microsoft.Extensions.Hosting;
 
 namespace AssignmentsApp
@@ -56,7 +57,12 @@ namespace AssignmentsApp
                 endpoints.MapAreaControllerRoute(
                     name: "module5",
                     areaName: "Module5",
-                    pattern: "Module5/{controller=Home}/{action=Index}/{id?}");
+                    pattern: "Module5/{controller=Home}/{action=Index}");
+
+                endpoints.MapAreaControllerRoute(
+                    name: "module5",
+                    areaName: "Module5",
+                    pattern: "Module5/{controller=Home}/Custom");
 
                 endpoints.MapControllerRoute(
                     name: "default",
