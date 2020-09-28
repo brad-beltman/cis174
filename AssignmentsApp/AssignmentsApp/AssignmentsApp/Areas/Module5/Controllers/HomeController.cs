@@ -13,5 +13,16 @@ namespace AssignmentsApp.Areas.Module5.Controllers
         {
             return View();
         }
+
+        public IActionResult Custom()
+        {
+            return Content("This is the custom route for module 5");
+        }
+
+        //[Route([Controller]/)]
+        public IActionResult Attribute()
+        {
+            return Content("This is the attribute route for module 5");
+        }
     }
 }
