@@ -1,0 +1,14 @@
+﻿<h4>Custom routing</h4>
+<p>
+    Area: Module5 <br />
+    Controller: Home <br />
+    Action: Custom <br />
+</p><br />
+
+    <p>
+        A custom route was added to the Startup class, which looks like:<br />
+        endpoints.MapAreaControllerRoute(<br />
+        &emsp;name: "module5",<br />
+        &emsp;areaName: "Module5",<br />
+        &emsp;pattern: "Module5/{controller=Home}/Custom");
+    </p>
