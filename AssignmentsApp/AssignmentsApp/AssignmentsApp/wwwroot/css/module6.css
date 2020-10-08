@@ -1,0 +1,20 @@
+﻿html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#tooltip {
+    background: #eee;
+    border: 1px solid #bbb;
+    padding: 5px;
+    position: absolute;
+}
+
+.nd {
+    display: none;
+}

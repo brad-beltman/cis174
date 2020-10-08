@@ -1,0 +1,68 @@
+﻿@model CountryListViewModel
+
+<html>
+    <head>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-sm-3">
+                <h3>Games</h3>
+                <div class="list-group">
+                    @foreach (string game in Model.Games)
+                    {
+                        <a asp-action="Index"
+                           asp-route-game ="@game"
+                           asp-route-category="@Model.ActiveCategory"
+                           class="list-group-item
+                           @Model.ActiveGame = @game">@game</a>
+                    }
+                </div>
+                <h3>Categories</h3>
+                <div class="list-group">
+                    @foreach (string category in Model.Categories)
+                    {
+                        <a asp-action="Index"
+                           asp-route-game="@Model.ActiveGame"
+                           asp-route-category="@category"
+                           class="list-group-item
+                           @Model.ActiveCategory = @category ">@category</a>
+                    }
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <ul class="list-inline">
+                    @foreach (Country country in Model.Countries)
+                    {
+                        if (Model.ActiveGame.ToLower() != "all")
+                        {
+                            if (country.Game != Model.ActiveGame)
+                            {
+                                continue;
+                            }
+                        }
+                        if (Model.ActiveCategory.ToLower() != "all")
+                        {
+                            if (country.Category != Model.ActiveCategory)
+                            {
+                                continue;
+                            }
+                        }
+                        <li class="list-inline-item">
+                            <form asp-action="Details" method="post">
+                                <button class="bg-white border" type="submit">
+                                    <img src="~/Resources/24x24/@(country.Abbr).png" 
+                                         alt="@country.Name | @country.Game | @country.Category" 
+                                         title="@country.Name | @country.Game | @country.Category"/>
+                                </button>
+
+                                <input type="hidden" id="Name" name="Name" value="@country.Name" />
+                                <input type="hidden" asp-for="ActiveGame" />
+                                <input type="hidden" asp-for="ActiveGame" />
+                            </form>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>

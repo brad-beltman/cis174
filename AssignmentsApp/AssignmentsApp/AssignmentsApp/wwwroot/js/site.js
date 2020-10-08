@@ -1,4 +1,11 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿$(function () {
+    var tooltip = $("#tooltip");
+    $('[data-tooltip]').bind('mouseover', function () {
+        var $this = $(this), offset = $this.offset(), posX = offset.left, posY = offset.top;
+        posX += $this.find('span').innerWidth();
+        tooltip.
+            css({ left: posX + "px", top: posY + "px" }).
+            text($this.attr('data-tooltip')).
+            removeClass("nd");
+    }).bind('mouseout', function () { tooltip.addClass('nd'); });
+});

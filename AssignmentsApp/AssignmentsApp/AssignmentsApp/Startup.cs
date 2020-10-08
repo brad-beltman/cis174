@@ -64,6 +64,11 @@ namespace AssignmentsApp
                     areaName: "Module5",
                     pattern: "Module5/{controller=Home}/Custom");
 
+                endpoints.MapAreaControllerRoute(
+                    name: "module6",
+                    areaName: "Module6",
+                    pattern: "Module6/{controller=Home}/{action=Index}/{game?}/{category?}");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
