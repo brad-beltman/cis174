@@ -22,6 +22,8 @@ namespace AssignmentsApp.Areas.Module6.Models
             Category = category;
         }
 
+        public int CountryID { get; set; }
+
         public string Name { get; set; }
 
         public string Abbr { get; set; }

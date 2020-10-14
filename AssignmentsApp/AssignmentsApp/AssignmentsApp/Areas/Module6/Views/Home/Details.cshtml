@@ -6,7 +6,7 @@
     <div class="col-sm-6 col-sm-offset-3">
         <ul class="list-group text-center">
             <li class="list-group-item">
-                <img src="~/Resources/96x96/@(Model.Abbr).png" alt="Team flag" />
+                <img src="~/Resources/96x96/@(Model.Abbr).png" alt="@(Model.Name) flag" />
                 <h3>@Model.Name</h3>
             </li>
             <li class="list-group-item">
@@ -18,7 +18,15 @@
             <li class="list-group-item">
                 <h4>Category: @Model.Category</h4>
             </li>
+            <li class="list-group-item">
+                <form asp-action="Add" method="post">
+                    <a asp-action="Index" class="btn btn-primary"
+                            asp-route-game="@Model.ActiveGame" 
+                            asp-route-category="@Model.ActiveCategory">Return to Home Page</a>
+                    <button type="submit" class="btn btn-primary">Add to Favorites</button>
+                    <input type="hidden" asp-for="Name" />
+                </form>
+            </li>
         </ul>
-        <input type="button" value="Back" onclick="window.history.back()" />
     </div>
 </div>

@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AssignmentsApp.Areas.Module6.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
@@ -24,7 +26,10 @@ namespace AssignmentsApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            services.AddSession();
             services.AddControllersWithViews();
+            services.AddDbContext<Module6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Module6Context")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +52,8 @@ namespace AssignmentsApp
 
             app.UseAuthorization();
 
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapAreaControllerRoute(
@@ -65,7 +72,7 @@ namespace AssignmentsApp
                     pattern: "Module5/{controller=Home}/Custom");
 
                 endpoints.MapAreaControllerRoute(
-                    name: "module6",
+                    name: "module6_game_category",
                     areaName: "Module6",
                     pattern: "Module6/{controller=Home}/{action=Index}/{game?}/{category?}");
 

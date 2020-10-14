@@ -9,8 +9,6 @@ namespace AssignmentsApp.Areas.Module6.Models
     {
         public List<Country> Countries { get; set; }
 
-        public string Name { get; set; }
-
         public string ActiveGame { get; set; } = "All";
 
         public string ActiveCategory { get; set; } = "All";
