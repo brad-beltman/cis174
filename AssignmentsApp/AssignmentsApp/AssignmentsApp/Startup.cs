@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AssignmentsApp.Areas.Module6.Data;
+using AssignmentsApp.Areas.Module8.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,7 +30,8 @@ namespace AssignmentsApp
             services.AddMemoryCache();
             services.AddSession();
             services.AddControllersWithViews();
-            services.AddDbContext<Module6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Module6Context")));
+            services.AddDbContext<Module6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("AzureModule6And7")));
+            services.AddDbContext<Module8Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Module8Context")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,7 +76,12 @@ namespace AssignmentsApp
                 endpoints.MapAreaControllerRoute(
                     name: "module6_game_category",
                     areaName: "Module6",
-                    pattern: "Module6/{controller=Home}/{action=Index}/{game?}/{category?}");
+                    pattern: "Module6/{controller=Home}/{action=Index}/{ActiveGame=all}/{ActiveCategory=all}");
+
+                endpoints.MapAreaControllerRoute(
+                    name: "module8",
+                    areaName: "Module8",
+                    pattern: "Module8/{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapControllerRoute(
                     name: "default",
