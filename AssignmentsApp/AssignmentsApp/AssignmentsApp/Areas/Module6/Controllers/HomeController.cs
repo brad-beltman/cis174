@@ -19,7 +19,7 @@ namespace AssignmentsApp.Areas.Module6.Controllers
             context = ctx;
         }
 
-        public ViewResult Index(string game = "all", string category = "all")
+        public ViewResult Index(CountryListViewModel model)
         {
             List<Country> Countries = context.Countries.OrderBy(c => c.Name).ToList();
             List<string> games = new List<string>();
@@ -42,8 +42,6 @@ namespace AssignmentsApp.Areas.Module6.Controllers
             }
 
             var session = new OlympicSession(HttpContext.Session);
-            session.SetActiveGame(game);
-            session.SetActiveCategory(category);
 
             // If no count in session, get cookie and restore favorite teams in session
             int? count = session.GetMyCountriesCount();
@@ -63,15 +61,11 @@ namespace AssignmentsApp.Areas.Module6.Controllers
                 session.SetMyFavs(mycountries);
             }
 
-            // Create our model to pass to the view
-            var model = new CountryListViewModel()
-            {
-                Countries = Countries,
-                Games = games,
-                Categories = categories,
-                ActiveGame = RouteData.Values?["game"]?.ToString() ?? "all",
-                ActiveCategory = RouteData.Values?["category"]?.ToString() ?? "all"
-            };
+            model.Countries = Countries;
+            model.Games = games;
+            model.Categories = categories;
+            model.ActiveGame = RouteData.Values?["ActiveGame"]?.ToString();
+            model.ActiveCategory = RouteData.Values?["ActiveCategory"]?.ToString();
 
             return View(model);
         }
@@ -97,11 +91,9 @@ namespace AssignmentsApp.Areas.Module6.Controllers
 
         [HttpPost]
         [Route("[area]/[controller]/[action]")]
-        public RedirectToActionResult Add(string name)
+        public RedirectToActionResult Add(CountryViewModel model)
         {
-            CountryViewModel model = new CountryViewModel();
-
-            var country = context.Countries.Where(c => c.Name == name).FirstOrDefault();
+            var country = context.Countries.Where(c => c.CountryID == model.CountryID).FirstOrDefault();
             model.Name = country.Name;
             model.Abbr = country.Abbr;
             model.Game = country.Game;
@@ -109,20 +101,33 @@ namespace AssignmentsApp.Areas.Module6.Controllers
             model.Category = country.Category;
 
             var session = new OlympicSession(HttpContext.Session);
-            var favs = session.GetMyFavs();
-            favs.Add(country);
-            session.SetMyFavs(favs);
 
-            var cookies = new FavoriteCookies(Response.Cookies);
-            cookies.SetFavoriteIds(favs);
-
-            TempData["message"] = $"{country.Name} added to favorites";
-
-            return RedirectToAction("Index", new
+            if (ModelState.IsValid)
             {
-                game = session.GetActiveGame(),
-                category = session.GetActiveCategory()
-            });
+                var favs = session.GetMyFavs();
+                favs.Add(country);
+                session.SetMyFavs(favs);
+
+                var cookies = new FavoriteCookies(Response.Cookies);
+                cookies.SetFavoriteIds(favs);
+
+                TempData["message"] = $"{country.Name} added to favorites";
+
+                return RedirectToAction("Index", new
+                {
+                    ActiveGame = session.GetActiveGame(),
+                    ActiveCategory = session.GetActiveCategory()
+                });
+            }
+            else
+            {
+                TempData["message"] = $"There was an error adding {country.Name} to favorites";
+                return RedirectToAction("Index", new
+                {
+                    ActiveGame = session.GetActiveGame(),
+                    ActiveCategory = session.GetActiveCategory()
+                });
+            }
         }
     }
 }

@@ -12,8 +12,8 @@ namespace AssignmentsApp.Areas.Module6.Models
 
         }
 
-        public string ActiveGame { get; set; }
+        public string ActiveGame { get; set; } = "all";
 
-        public string ActiveCategory { get; set; }
+        public string ActiveCategory { get; set; } = "all";
     }
 }

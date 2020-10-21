@@ -39,8 +39,8 @@ namespace AssignmentsApp.Areas.Module6.Controllers
 
             return RedirectToAction("Index", "Home", new
             {
-                ActiveGame = session.GetActiveGame(),
-                ActiveCategory = session.GetActiveCategory()
+                game = session.GetActiveGame(),
+                category = session.GetActiveCategory()
             });
         }
     }
