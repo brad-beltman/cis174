@@ -12,7 +12,6 @@ namespace AssignmentsApp.Areas.Module8.Models
 
         [Required(ErrorMessage = "Please enter a name")]
         [StringLength(50)]
-        [RegularExpression("[a-zA-Z0-9]", ErrorMessage = "Only alpha numberic characters are allowed")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Please enter a description")]
