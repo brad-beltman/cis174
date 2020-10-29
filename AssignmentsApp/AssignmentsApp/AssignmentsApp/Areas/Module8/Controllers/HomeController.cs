@@ -59,7 +59,6 @@ namespace AssignmentsApp.Areas.Module8.Controllers
         [HttpPost]
         public RedirectToActionResult Filter(string filter)
         {
-            //string id = string.Join('-', filter);
             return RedirectToAction("Index", new { ID = filter });
         }
 

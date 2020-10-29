@@ -11,22 +11,6 @@
                     <option value="all">All</option>
                 </select>
             </div>
-            @*<div class="form-group">
-                <label>Sprint Number:</label>
-                <select name="filter" class="form-control"
-                        asp-items="@(new SelectList(ViewBag.SprintNumbers,
-                            "SprintNumber", "SprintNumber", ViewBag.Filters.SprintNumber))">
-                    <option value="all">All</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Point Value:</label>
-                <select name="filter" class="form-control"
-                        asp-items="@(new SelectList(ViewBag.PointValues,
-                            "PointValue", "PointValue", ViewBag.Filters.PointValue))">
-                    <option value="all">All</option>
-                </select>
-            </div>*@
             <button type="submit" class="btn btn-primary">Filter</button>
             <a asp-action="Index" asp-route-id="" class="btn btn-primary">Clear</a>
         </form>

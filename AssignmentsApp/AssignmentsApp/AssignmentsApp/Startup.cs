@@ -31,6 +31,7 @@ namespace AssignmentsApp
             services.AddSession();
             services.AddControllersWithViews();
             services.AddDbContext<Module6Context>(options => options.UseSqlServer(Configuration.GetConnectionString("AzureModule6And7")));
+            //services.AddDbContext<Module8Context>(options => options.UseSqlServer(Configuration.GetConnectionString("AzureModule8")));
             services.AddDbContext<Module8Context>(options => options.UseSqlServer(Configuration.GetConnectionString("Module8Context")));
         }
 
