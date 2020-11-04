@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Report>
+
+@{
+    ViewData["Title"] = "Report Management";
+}
+
+<h1>Report Management</h1>
+
+<p>
+    <a asp-area="Admin" asp-controller="Upload" asp-action="Index">Upload a New Report</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ReportType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var report in Model) {
+        <tr>
+            <td>
+                @report.ReportType.Name
+            </td>
+            <td>
+                @report.Name
+            </td>
+            <td>
+                @report.Author
+            </td>
+            <td>
+                @report.Date
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@report.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@report.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@report.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

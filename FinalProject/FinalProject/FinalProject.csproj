@@ -4,4 +4,30 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\20201103005827_Added ReportTypes.cs" />
+    <Compile Remove="Migrations\20201103005827_Added ReportTypes.Designer.cs" />
+    <Compile Remove="Migrations\20201103010209_Added ReportTypes.cs" />
+    <Compile Remove="Migrations\20201103010209_Added ReportTypes.Designer.cs" />
+    <Compile Remove="Migrations\20201103011310_Added ReportTypes.cs" />
+    <Compile Remove="Migrations\20201103011310_Added ReportTypes.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="OpenXML\" />
+  </ItemGroup>
+
 </Project>
