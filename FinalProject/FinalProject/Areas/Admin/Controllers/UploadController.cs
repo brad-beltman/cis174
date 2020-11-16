@@ -24,12 +24,10 @@ namespace FinalProject.Controllers
         }
 
         [HttpGet]
-        public ViewResult Index()
+        public ViewResult Index(UploadViewModel model)
         {
-            var model = new UploadViewModel()
-            {
-                ReportTypes = _context.ReportTypes.ToList()
-            };
+            model.ReportTypes = _context.ReportTypes.ToList();
+
             return View(model);
         }
 
@@ -41,27 +39,39 @@ namespace FinalProject.Controllers
             {
                 if (file.Length > 0)
                 {
-                    // Using this to dynamically get the file name without asking the user
-                    report.Name = Path.GetFileNameWithoutExtension(file.FileName);
-
-                    // Need to write the file as a memorystream and convert it to bytes before base64 encoding for storage
-                    byte[] bytes;
-                    using (var ms = new MemoryStream())
+                    // The file should be 20MB or less
+                    if (file.Length < 20000000)
                     {
-                        file.CopyTo(ms);
-                        bytes = ms.ToArray();
+                        // Using this to dynamically get the file name without asking the user
+                        report.Name = Path.GetFileNameWithoutExtension(file.FileName);
+
+                        // Need to write the file as a memorystream and convert it to bytes before base64 encoding for storage
+                        byte[] bytes;
+                        using (var ms = new MemoryStream())
+                        {
+                            file.CopyTo(ms);
+                            bytes = ms.ToArray();
+                        }
+
+                        // Convert to base64 for easy storage
+                        report.Content = Convert.ToBase64String(bytes);
+
+                        _context.Reports.Add(report);
+                        _context.SaveChanges();
+
+                        TempData["message"] = "The report was uploaded successfully";
                     }
-
-                    // Convert to base64 for easy storage
-                    report.Content = Convert.ToBase64String(bytes);
-
-                    _context.Reports.Add(report);
-                    _context.SaveChanges();
-
-                    TempData["message"] = "The report was uploaded successfully";
+                    else
+                    {
+                        TempData["message"] = "The file is larger than 20MB";
+                    }
+                }
+                else
+                {
+                    TempData["message"] = "The file was empty";
                 }
             }
-            return RedirectToAction("Index", "Upload");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FinalProject.Data;
 using FinalProject.Models;
+using FinalProject.Areas.Admin.Models.DTOs;
 
 namespace FinalProject.Areas.Admin.Controllers
 {
@@ -23,26 +24,36 @@ namespace FinalProject.Areas.Admin.Controllers
         // GET: Admin/Home
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Reports.Include(r => r.ReportType).ToListAsync());
+            var reports = await _context.Reports
+                .Include(rt => rt.ReportType)
+                .Select(r => new ReportsDTO
+                {
+                    ID = r.ID,
+                    Name = r.Name,
+                    Author = r.Author,
+                    Date = r.Date,
+                    ReportType = r.ReportType.Name
+                })
+                .ToListAsync();
+            return View(reports);
         }
 
-        // GET: Admin/Home/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //// GET: Admin/Home/Details/5
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var report = await _context.Reports
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (report == null)
-            {
-                return NotFound();
-            }
+        //    var report = await _context.Reports.Include(r => r.ReportType).FirstOrDefaultAsync(r => r.ID == id);
+        //    if (report == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(report);
-        }
+        //    return View(report);
+        //}
 
         // GET: Admin/Home/Create
         public IActionResult Create()
@@ -74,7 +85,22 @@ namespace FinalProject.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var report = await _context.Reports.FindAsync(id);
+            //var report = await _context.Reports.FindAsync(id);
+            var report = await _context.Reports
+                .Include(rt => rt.ReportType)
+                .Select(r => new ReportsDTO
+                {
+                    ID = r.ID,
+                    Name = r.Name,
+                    Author = r.Author,
+                    Date = r.Date,
+                    ReportType = r.ReportType.Name
+                })
+                .Where(r => r.ID == id)
+                .SingleOrDefaultAsync();
+
+            ViewBag.ReportTypes = await _context.ReportTypes.ToListAsync();
+
             if (report == null)
             {
                 return NotFound();
@@ -87,9 +113,10 @@ namespace FinalProject.Areas.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Type,Name,Author,Date,Content")] Report report)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,ReportTypeID,Name,Author,Date")] ReportsDTO reportdto)
         {
-            if (id != report.ID)
+            // Using the ReportsDTO so the full file contents aren't passed around each request
+            if (id != reportdto.ID)
             {
                 return NotFound();
             }
@@ -98,12 +125,22 @@ namespace FinalProject.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(report);
+                    Report editReport = new Report
+                    {
+                        ID = reportdto.ID,
+                        Name = reportdto.Name,
+                        Author = reportdto.Author,
+                        Date = reportdto.Date,
+                        ReportTypeID = reportdto.ReportTypeID,
+                        // No need for the admin to be able to update the file contents
+                        Content = _context.Reports.Where(r => r.ID == reportdto.ID).Select(r => r.Content).SingleOrDefault()
+                    };
+                    _context.Update(editReport);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReportExists(report.ID))
+                    if (!ReportExists(reportdto.ID))
                     {
                         return NotFound();
                     }
@@ -114,7 +151,7 @@ namespace FinalProject.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(report);
+            return View(reportdto);
         }
 
         // GET: Admin/Home/Delete/5
@@ -142,7 +179,16 @@ namespace FinalProject.Areas.Admin.Controllers
         {
             var report = await _context.Reports.FindAsync(id);
             _context.Reports.Remove(report);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+                TempData["message"] = "The report was deleted successfully";
+            }
+            catch (Exception)
+            {
+                TempData["fail_message"] = "The report was not deleted successfully";
+                throw;
+            }
             return RedirectToAction(nameof(Index));
         }
 

@@ -24,6 +24,7 @@ namespace FinalProject.Models
         public string Author { get; set; }  // This may be set to "Multiple" if there are more than one author
 
         [Required(ErrorMessage = "Please include the date of the report")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; } = DateTime.Today;  // Reflects the date of the report, not when it was uploaded
 
         [Required(ErrorMessage = "A file is required")]

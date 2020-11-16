@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using FinalProject.Models;
 using FinalProject.Data;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using FinalProject.OpenXML;
 
 namespace FinalProject.Controllers
 {
@@ -20,9 +22,56 @@ namespace FinalProject.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public ViewResult Index()
         {
             return View(_context.Reports.Include(r => r.ReportType).ToList());
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var report = await _context.Reports.Include(r => r.ReportType).FirstOrDefaultAsync(r => r.ID == id);
+            if (report == null)
+            {
+                return NotFound();
+            }
+
+            return View(report);
+        }
+
+        // Inject IReportDisplay directly into the action, since this is the only action that will need it.
+        public IActionResult Display(int? id, [FromServices]IReportDisplay reportDisplay, DisplayViewModel model)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Report report = _context.Reports.Find(id);
+
+            byte[] bytes = Convert.FromBase64String(report.Content);
+
+            model.html = reportDisplay.ConvertToHTML(bytes);
+
+            return View(model);
+        }
+
+        public IActionResult Download(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Report report = _context.Reports.Find(id);
+
+            byte[] file = Convert.FromBase64String(report.Content);
+
+            return File(file, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", report.Name + ".docx");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

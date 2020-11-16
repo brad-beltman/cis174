@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FinalProject.Data;
+using FinalProject.Models;
+using FinalProject.OpenXML;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +28,7 @@ namespace FinalProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddTransient(typeof(IReportDisplay), typeof(ReportDisplay));
             services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DocSearchContext")));
         }

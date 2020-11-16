@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Report>
+﻿@model IEnumerable<ReportsDTO>
 
 @{
     ViewData["Title"] = "Report Management";
@@ -31,7 +31,7 @@
 @foreach (var report in Model) {
         <tr>
             <td>
-                @report.ReportType.Name
+                @report.ReportType
             </td>
             <td>
                 @report.Name
@@ -40,11 +40,11 @@
                 @report.Author
             </td>
             <td>
-                @report.Date
+                @report.Date.ToShortDateString()
             </td>
             <td>
+                <a asp-area="" asp-controller="Home" asp-action="Display" asp-route-id="@report.ID">View</a> | 
                 <a asp-action="Edit" asp-route-id="@report.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@report.ID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@report.ID">Delete</a>
             </td>
         </tr>

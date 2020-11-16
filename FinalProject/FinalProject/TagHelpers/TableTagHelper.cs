@@ -8,7 +8,6 @@ namespace FinalProject.TagHelpers
 {
     public class TableTagHelper : TagHelper
     {
-
         // This helps format all tables
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

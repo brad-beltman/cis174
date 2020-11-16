@@ -40,10 +40,11 @@
                     @report.Author
                 </td>
                 <td>
-                    @report.Date
+                    @report.Date.ToShortDateString()
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@report.ID">Details</a>
+                    <a asp-action="Display" asp-route-id="@report.ID">View</a> | 
+                    <a asp-action="Download" asp-route-id="@report.ID">Download</a>
                 </td>
             </tr>
         }
