@@ -61,6 +61,8 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+  /* This is to accomodate the fixed navbar at the top*/
+  padding-top: 70px;
 }
 .footer {
   position: absolute;
