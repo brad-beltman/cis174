@@ -10,6 +10,6 @@ namespace FinalProject.Models
     {
         XElement ConvertToHTML(byte[] bytes);
 
-        string CreateSearchIndex(byte[] bytes);
+        Dictionary<string, string> CreateSearchIndex(byte[] bytes);
     }
 }

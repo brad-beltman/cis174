@@ -38,23 +38,6 @@ namespace FinalProject.Areas.Admin.Controllers
             return View(reports);
         }
 
-        //// GET: Admin/Home/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var report = await _context.Reports.Include(r => r.ReportType).FirstOrDefaultAsync(r => r.ID == id);
-        //    if (report == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(report);
-        //}
-
         // GET: Admin/Home/Create
         public IActionResult Create()
         {
@@ -161,7 +144,18 @@ namespace FinalProject.Areas.Admin.Controllers
             }
 
             var report = await _context.Reports
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .Include(rt => rt.ReportType)
+                .Select(r => new ReportsDTO
+                {
+                    ID = r.ID,
+                    Name = r.Name,
+                    Author = r.Author,
+                    Date = r.Date,
+                    ReportType = r.ReportType.Name
+                })
+                .Where(r => r.ID == id)
+                .SingleOrDefaultAsync();
+
             if (report == null)
             {
                 return NotFound();

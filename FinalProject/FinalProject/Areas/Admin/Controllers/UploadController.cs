@@ -55,7 +55,10 @@ namespace FinalProject.Controllers
                             file.CopyTo(ms);
                             bytes = ms.ToArray();
 
-                            report.SearchIndex = _reportOps.CreateSearchIndex(bytes);
+                            Dictionary<string, string> content = _reportOps.CreateSearchIndex(bytes);
+
+                            report.Headings = content["headings"];
+                            report.SearchIndex = content["content"];
                         }
 
                         // Convert to base64 for easy storage

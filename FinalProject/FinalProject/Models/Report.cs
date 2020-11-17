@@ -32,5 +32,7 @@ namespace FinalProject.Models
         public string Content { get; set; }  // This holds the report contents
 
         public string SearchIndex { get; set; } // This holds the report contents, so we can separate them from the document structure
+
+        public string Headings { get; set; } // This holdes the headings from each report, so we can give the user a quick visual look at the contents
     }
 }

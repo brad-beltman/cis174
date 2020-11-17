@@ -95,10 +95,14 @@ namespace FinalProject.OpenXML
             return html;
         }
 
-        public string CreateSearchIndex(byte[] bytes)
+        public Dictionary<string, string> CreateSearchIndex(byte[] bytes)
         {
-            // Create a list of strings to store report content, and separate from the Word document XML structure for easy searching
+            // Create a list of strings to store headings and report content
             List<string> searchIndex = new List<string>();
+            List<string> headings = new List<string>();
+
+            // Create a dictionary so we have one value to return
+            Dictionary<string, string> returnValues = new Dictionary<string, string>();
 
             // Read bytes to MemoryStream, so the OpenXML SDK can work with it directly
             using MemoryStream mem = new MemoryStream();
@@ -115,6 +119,41 @@ namespace FinalProject.OpenXML
                 IEnumerable<Paragraph> paragraphs = bodyDoc.Descendants<Paragraph>();
                 foreach (Paragraph p in paragraphs)
                 {
+                    // Look in the Paragraph Style portion for headings so we can show these to the user without opening each report
+                    ParagraphStyleId style = p.Descendants<ParagraphStyleId>().FirstOrDefault();
+                    if (style != null)
+                    {
+                        if (style.Val.Value.Contains("Heading") && style.Val.Value != "TableHeading")
+                        {
+                            StringBuilder headingValue = new StringBuilder();
+                            IEnumerable<Text> headingPortion = p.Descendants<Text>();
+                            foreach (Text t in headingPortion)
+                            {
+                                if (t.Text != null)
+                                {
+                                    // This section adds a space indent for each level of heading, so it shows as a nice visual
+                                    // heirarchical view in the tool tip
+                                    if (style.Val.Value == "Heading2")
+                                    {
+                                        headingValue.Append(" " + t.Text);
+                                    }
+                                    else if (style.Val.Value == "Heading3")
+                                    {
+                                        headingValue.Append("  " + t.Text);
+                                    }
+                                    else if (style.Val.Value == "Heading4")
+                                    {
+                                        headingValue.Append("   " + t.Text);
+                                    }
+                                    else
+                                    {
+                                        headingValue.Append(t.Text);
+                                    }
+                                }
+                            }
+                            headings.Add(headingValue.ToString());
+                        } 
+                    }
                     StringBuilder stringBuilder = new StringBuilder();
                     IEnumerable<Text> texts = p.Descendants<Text>();
                     foreach (Text t in texts)
@@ -147,7 +186,10 @@ namespace FinalProject.OpenXML
                     }
                 }
             }
-            return string.Join(" ", searchIndex);
+            returnValues.Add("headings", string.Join(Environment.NewLine, headings));
+            returnValues.Add("content", string.Join(" ", searchIndex).ToLower());
+
+            return returnValues;
         }
     }
 }
