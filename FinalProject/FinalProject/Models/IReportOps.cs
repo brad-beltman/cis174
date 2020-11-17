@@ -6,8 +6,10 @@ using System.Xml.Linq;
 
 namespace FinalProject.Models
 {
-    public interface IReportDisplay
+    public interface IReportOps
     {
         XElement ConvertToHTML(byte[] bytes);
+
+        string CreateSearchIndex(byte[] bytes);
     }
 }

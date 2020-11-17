@@ -125,18 +125,16 @@ namespace FinalProject.Areas.Admin.Controllers
             {
                 try
                 {
-                    Report editReport = new Report
-                    {
-                        ID = reportdto.ID,
-                        Name = reportdto.Name,
-                        Author = reportdto.Author,
-                        Date = reportdto.Date,
-                        ReportTypeID = reportdto.ReportTypeID,
-                        // No need for the admin to be able to update the file contents
-                        Content = _context.Reports.Where(r => r.ID == reportdto.ID).Select(r => r.Content).SingleOrDefault()
-                    };
-                    _context.Update(editReport);
+                    Report report = _context.Reports.Find(id);
+                    report.ID = reportdto.ID;
+                    report.Name = reportdto.Name;
+                    report.Author = reportdto.Author;
+                    report.Date = reportdto.Date;
+                    report.ReportTypeID = reportdto.ReportTypeID;
+                    // No need for the admin to be able to update the file contents or SearchIndex directly, so they are not included here
+
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "The report was updated successfully";
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -16,10 +16,12 @@ namespace FinalProject.Controllers
     public class HomeController : Controller
     {
         private readonly DocSearchContext _context;
+        private IReportOps _reportOps { get; set; }
 
-        public HomeController(DocSearchContext context)
+        public HomeController(DocSearchContext context, IReportOps reportOps)
         {
             _context = context;
+            _reportOps = reportOps;
         }
 
         public ViewResult Index()
@@ -44,7 +46,7 @@ namespace FinalProject.Controllers
         }
 
         // Inject IReportDisplay directly into the action, since this is the only action that will need it.
-        public IActionResult Display(int? id, [FromServices]IReportDisplay reportDisplay, DisplayViewModel model)
+        public IActionResult Display(int? id, DisplayViewModel model)
         {
             if (id == null)
             {
@@ -55,7 +57,7 @@ namespace FinalProject.Controllers
 
             byte[] bytes = Convert.FromBase64String(report.Content);
 
-            model.html = reportDisplay.ConvertToHTML(bytes);
+            model.html = _reportOps.ConvertToHTML(bytes);
 
             return View(model);
         }

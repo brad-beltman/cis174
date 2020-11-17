@@ -10,10 +10,12 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using OpenXmlPowerTools;
 using FinalProject.Models;
 using System.Drawing.Imaging;
+using System.Text;
+using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
 
 namespace FinalProject.OpenXML
 {
-    public class ReportDisplay : IReportDisplay
+    public class ReportOps : IReportOps
     {
         public XElement ConvertToHTML(byte[] bytes)
         {
@@ -91,6 +93,61 @@ namespace FinalProject.OpenXML
             XElement html = WmlToHtmlConverter.ConvertToHtml(wordDoc, settings);
 
             return html;
+        }
+
+        public string CreateSearchIndex(byte[] bytes)
+        {
+            // Create a list of strings to store report content, and separate from the Word document XML structure for easy searching
+            List<string> searchIndex = new List<string>();
+
+            // Read bytes to MemoryStream, so the OpenXML SDK can work with it directly
+            using MemoryStream mem = new MemoryStream();
+            mem.Write(bytes, 0, (int)bytes.Length);
+
+            // Open as a WordprocessingDocument so we can traverse document elements
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(mem, true))
+            {
+                // Get the main portions of the doc to work with, as this is where the content we're interested in is stored
+                MainDocumentPart mainDoc = wordDoc.MainDocumentPart;
+                Body bodyDoc = mainDoc.Document.Body;
+
+                // Pull all text from each Paragraph element.  This is where most content will be stored
+                IEnumerable<Paragraph> paragraphs = bodyDoc.Descendants<Paragraph>();
+                foreach (Paragraph p in paragraphs)
+                {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    IEnumerable<Text> texts = p.Descendants<Text>();
+                    foreach (Text t in texts)
+                    {
+                        if (t.Text != string.Empty)
+                        {
+                            stringBuilder.Append(t.Text);
+                        }
+                    }
+                    searchIndex.Add(stringBuilder.ToString());
+                }
+
+                // Pull all text from within table elements
+                IEnumerable<Table> tables = bodyDoc.Descendants<Table>();
+                foreach (Table table in tables)
+                {
+                    IEnumerable<Paragraph> tableparagraphs = table.Descendants<Paragraph>();
+                    foreach (Paragraph p in tableparagraphs)
+                    {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        IEnumerable<Text> texts = p.Descendants<Text>();
+                        foreach (Text t in texts)
+                        {
+                            if (t.Text != string.Empty)
+                            {
+                                stringBuilder.Append(t.Text);
+                            }
+                        }
+                        searchIndex.Add(stringBuilder.ToString());
+                    }
+                }
+            }
+            return string.Join(" ", searchIndex);
         }
     }
 }

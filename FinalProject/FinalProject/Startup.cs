@@ -28,7 +28,7 @@ namespace FinalProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddTransient(typeof(IReportDisplay), typeof(ReportDisplay));
+            services.AddTransient(typeof(IReportOps), typeof(ReportOps));
             services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DocSearchContext")));
         }

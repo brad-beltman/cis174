@@ -30,5 +30,7 @@ namespace FinalProject.Models
         [Required(ErrorMessage = "A file is required")]
         [Display(Name = "File")]
         public string Content { get; set; }  // This holds the report contents
+
+        public string SearchIndex { get; set; } // This holds the report contents, so we can separate them from the document structure
     }
 }

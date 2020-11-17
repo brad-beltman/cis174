@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FinalProject.Areas.Admin.Models;
 using FinalProject.Data;
 using FinalProject.Models;
+using FinalProject.OpenXML;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,10 +18,12 @@ namespace FinalProject.Controllers
     public class UploadController : Controller
     {
         private readonly DocSearchContext _context;
+        private IReportOps _reportOps { get; set; }
 
-        public UploadController(DocSearchContext context)
+        public UploadController(DocSearchContext context, IReportOps reportOps)
         {
             _context = context;
+            _reportOps = reportOps;
         }
 
         [HttpGet]
@@ -51,6 +54,8 @@ namespace FinalProject.Controllers
                         {
                             file.CopyTo(ms);
                             bytes = ms.ToArray();
+
+                            report.SearchIndex = _reportOps.CreateSearchIndex(bytes);
                         }
 
                         // Convert to base64 for easy storage
