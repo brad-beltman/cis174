@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FinalProject.Data;
+using FinalProject.Data.Repositories;
 using FinalProject.Models;
 using FinalProject.OpenXML;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,7 @@ namespace FinalProject
             services.AddMemoryCache();
             services.AddSession();
             services.AddControllersWithViews();
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient(typeof(IReportOps), typeof(ReportOps));
             services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DocSearchContext")));
