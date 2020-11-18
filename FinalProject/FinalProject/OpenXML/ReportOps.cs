@@ -129,7 +129,7 @@ namespace FinalProject.OpenXML
                             IEnumerable<Text> headingPortion = p.Descendants<Text>();
                             foreach (Text t in headingPortion)
                             {
-                                if (t.Text != null)
+                                if (!string.IsNullOrEmpty(t.Text))
                                 {
                                     // This section adds a space indent for each level of heading, so it shows as a nice visual
                                     // heirarchical view in the tool tip
@@ -158,9 +158,9 @@ namespace FinalProject.OpenXML
                     IEnumerable<Text> texts = p.Descendants<Text>();
                     foreach (Text t in texts)
                     {
-                        if (t.Text != string.Empty)
+                        if (!string.IsNullOrEmpty(t.Text))
                         {
-                            stringBuilder.Append(t.Text);
+                            stringBuilder.Append(t.Text.ToLower());
                         }
                     }
                     searchIndex.Add(stringBuilder.ToString());
@@ -177,9 +177,9 @@ namespace FinalProject.OpenXML
                         IEnumerable<Text> texts = p.Descendants<Text>();
                         foreach (Text t in texts)
                         {
-                            if (t.Text != string.Empty)
+                            if (!string.IsNullOrEmpty(t.Text))
                             {
-                                stringBuilder.Append(t.Text);
+                                stringBuilder.Append(t.Text.ToLower());
                             }
                         }
                         searchIndex.Add(stringBuilder.ToString());
@@ -187,7 +187,7 @@ namespace FinalProject.OpenXML
                 }
             }
             returnValues.Add("headings", string.Join(Environment.NewLine, headings));
-            returnValues.Add("content", string.Join(" ", searchIndex).ToLower());
+            returnValues.Add("content", string.Join(" ", searchIndex));
 
             return returnValues;
         }

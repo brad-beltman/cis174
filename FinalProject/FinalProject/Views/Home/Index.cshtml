@@ -8,6 +8,14 @@
     <h1 class="display-4">Welcome to DocSearch</h1>
 </div>
 
+<form asp-controller="Home" asp-action="Index" method="get">
+    <p>
+        Report Contents: <input type="text" name="searchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+<a asp-controller="Home" asp-action="Index">Reset</a>
+
 <table class="table">
     <thead>
         <tr>
@@ -30,7 +38,7 @@
         @foreach (var report in Model)
         {
             <tr>
-                <td>
+                <td data-toggle="tooltip" title="@report.Headings">
                     @report.ReportType.Name
                 </td>
                 <td>
@@ -43,7 +51,7 @@
                     @report.Date.ToShortDateString()
                 </td>
                 <td>
-                    <a asp-action="Display" asp-route-id="@report.ID" title="@report.Headings" data-toggle="tooltip">Display</a> | 
+                    <a asp-action="Display" asp-route-id="@report.ID" target="_blank">Display</a> | 
                     <a asp-action="Download" asp-route-id="@report.ID">Download</a>
                 </td>
             </tr>

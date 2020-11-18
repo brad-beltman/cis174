@@ -24,25 +24,15 @@ namespace FinalProject.Controllers
             _reportOps = reportOps;
         }
 
-        public ViewResult Index()
+        public ViewResult Index(string searchString)
         {
-            return View(_context.Reports.Include(r => r.ReportType).ToList());
-        }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            if (!String.IsNullOrEmpty(searchString))
             {
-                return NotFound();
+                return View(_context.Reports.Include(r => r.ReportType)
+                    .Where(r => r.SearchIndex.Contains(searchString.ToLower())).ToList());
             }
-
-            var report = await _context.Reports.Include(r => r.ReportType).FirstOrDefaultAsync(r => r.ID == id);
-            if (report == null)
-            {
-                return NotFound();
-            }
-
-            return View(report);
+            else
+                return View(_context.Reports.Include(r => r.ReportType).ToList());
         }
 
         // Inject IReportDisplay directly into the action, since this is the only action that will need it.
