@@ -27,6 +27,8 @@ namespace FinalProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            services.AddSession();
             services.AddControllersWithViews();
             services.AddTransient(typeof(IReportOps), typeof(ReportOps));
             services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
@@ -52,6 +54,8 @@ namespace FinalProject
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

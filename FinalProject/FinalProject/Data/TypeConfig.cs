@@ -19,10 +19,11 @@ namespace FinalProject.Data
                 new ReportType { ReportTypeID = 4, Name = "IPT"  },
                 new ReportType { ReportTypeID = 5, Name = "MASA" },
                 new ReportType { ReportTypeID = 6, Name = "CASA" },
-                new ReportType { ReportTypeID = 7, Name = "RedTeam"},
-                new ReportType { ReportTypeID = 8, Name = "Phishing"},
-                new ReportType { ReportTypeID = 9, Name = "VA"},
-                new ReportType { ReportTypeID = 10, Name = "Other"}
+                new ReportType { ReportTypeID = 7, Name = "Wireless"},
+                new ReportType { ReportTypeID = 8, Name = "RedTeam"},
+                new ReportType { ReportTypeID = 9, Name = "Phishing"},
+                new ReportType { ReportTypeID = 10, Name = "VA"},
+                new ReportType { ReportTypeID = 11, Name = "Other"}
                 );
         }
     }
