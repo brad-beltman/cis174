@@ -40,11 +40,27 @@ namespace FinalProject.Data
             get { return Where; }
         }
 
+        public SelectClauses<T> SelectClauses { get; set; }
+        public Expression<Func<T, bool>> Select
+        {
+            set
+            {
+                if (SelectClauses == null)
+                {
+                    SelectClauses = new SelectClauses<T>();
+                }
+                SelectClauses.Add(value);
+            }
+            get { return Select; }
+        }
+
         // read-only properties
         public bool HasWhere => WhereClauses != null;
+        public bool HasSelect => SelectClauses != null;
         public bool HasOrderBy => OrderBy != null;
         public bool HasPaging => PageNumber > 0 && PageSize > 0;
     }
 
     public class WhereClauses<T> : List<Expression<Func<T, bool>>> { }
+    public class SelectClauses<T> : List<Expression<Func<T, bool>>> { }
 }

@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FinalProject.Areas.Admin.Models;
 using FinalProject.Data;
+using FinalProject.Data.Repositories;
 using FinalProject.Models;
 using FinalProject.OpenXML;
 using Microsoft.AspNetCore.Http;
@@ -17,19 +18,22 @@ namespace FinalProject.Controllers
     [Area("Admin")]
     public class UploadController : Controller
     {
-        private readonly DocSearchContext _context;
+        //private readonly DocSearchContext _context;
         private IReportOps _reportOps { get; set; }
+        private IRepository<Report> _reports { get; set; }
+        private IRepository<ReportType> _reportTypes { get; set; }
 
-        public UploadController(DocSearchContext context, IReportOps reportOps)
+        public UploadController(IRepository<Report> rep, IRepository<ReportType> rt_rep, IReportOps reportOps)
         {
-            _context = context;
+            _reports = rep;
+            _reportTypes = rt_rep;
             _reportOps = reportOps;
         }
 
         [HttpGet]
         public ViewResult Index(UploadViewModel model)
         {
-            model.ReportTypes = _context.ReportTypes.ToList();
+            model.ReportTypes = _reportTypes.List(new QueryOptions<ReportType> { });
 
             return View(model);
         }
@@ -64,8 +68,8 @@ namespace FinalProject.Controllers
                         // Convert to base64 for easy storage
                         report.Content = Convert.ToBase64String(bytes);
 
-                        _context.Reports.Add(report);
-                        _context.SaveChanges();
+                        _reports.Insert(report);
+                        _reports.Save();
 
                         TempData["message"] = "The report was uploaded successfully";
                     }

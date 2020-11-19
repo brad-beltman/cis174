@@ -33,6 +33,9 @@ namespace FinalProject.Data.Repositories
             IQueryable<T> query = BuildQuery(options);
             return query.FirstOrDefault();
         }
+
+        public virtual bool Exists(int id) => dbset.Any();
+
         public virtual void Insert(T entity) => dbset.Add(entity);
         public virtual void Update(T entity) => dbset.Update(entity);
         public virtual void Delete(T entity) => dbset.Remove(entity);

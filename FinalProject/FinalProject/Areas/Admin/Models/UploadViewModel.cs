@@ -9,6 +9,6 @@ namespace FinalProject.Areas.Admin.Models
 {
     public class UploadViewModel : Report
     {
-        public List<ReportType> ReportTypes { get; set; }
+        public IEnumerable<ReportType> ReportTypes { get; set; }
     }
 }

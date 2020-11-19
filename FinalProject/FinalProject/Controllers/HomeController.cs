@@ -17,13 +17,14 @@ namespace FinalProject.Controllers
 {
     public class HomeController : Controller
     {
-        //private readonly DocSearchContext _context;
+        // This is the file type expected for Word documents
+        private const string FileType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
         private IRepository<Report> _data { get; set; }
         private IReportOps _reportOps { get; set; }
 
         public HomeController(IRepository<Report> rep, IReportOps reportOps)
         {
-            // _context = context;
             _data = rep;
             _reportOps = reportOps;
         }
@@ -42,8 +43,6 @@ namespace FinalProject.Controllers
                     OrderBy = r => r.Date
                 });
                 return View(reports);
-                //return View(_context.Reports.Include(r => r.ReportType)
-                //    .Where(r => r.SearchIndex.Contains(searchString.ToLower())).ToList());
             }
             else
             {
@@ -54,19 +53,11 @@ namespace FinalProject.Controllers
                 });
                 return View(reports);
             }
-            //return View(_context.Reports.Include(r => r.ReportType).ToList());
         }
 
-        // Inject IReportDisplay directly into the action, since this is the only action that will need it.
         public IActionResult Display(int id, DisplayViewModel model)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
             Report report = _data.Get(id);
-            //Report report = _context.Reports.Find(id);
 
             byte[] bytes = Convert.FromBase64String(report.Content);
 
@@ -77,17 +68,11 @@ namespace FinalProject.Controllers
 
         public IActionResult Download(int id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
             Report report = _data.Get(id);
-            //Report report = _context.Reports.Find(id);
 
             byte[] file = Convert.FromBase64String(report.Content);
 
-            return File(file, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", report.Name + ".docx");
+            return File(file, FileType, report.Name + ".docx");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
