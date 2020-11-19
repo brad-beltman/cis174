@@ -18,7 +18,6 @@ namespace FinalProject.Controllers
     [Area("Admin")]
     public class UploadController : Controller
     {
-        //private readonly DocSearchContext _context;
         private IReportOps _reportOps { get; set; }
         private IRepository<Report> _reports { get; set; }
         private IRepository<ReportType> _reportTypes { get; set; }
@@ -75,12 +74,12 @@ namespace FinalProject.Controllers
                     }
                     else
                     {
-                        TempData["message"] = "The file is larger than 20MB";
+                        TempData["fail_message"] = "The file is larger than 20MB";
                     }
                 }
                 else
                 {
-                    TempData["message"] = "The file was empty";
+                    TempData["fail_message"] = "The file was empty";
                 }
             }
             return RedirectToAction("Index", "Home");
