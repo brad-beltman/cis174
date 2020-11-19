@@ -1,0 +1,46 @@
+﻿@model TicketListViewModel
+
+@{ 
+    ViewData["Title"] = "Ticket Catalog";
+
+    RouteDictionary current = Model.CurrentRoute;
+    RouteDictionary routes = Model.CurrentRoute.Clone();
+}
+
+<h1>Ticket Catalog</h1>
+
+<table class="table table-bordered table-striped table-sm">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @{ routes.SetSortAndDirection(nameof(Ticket.Name), current); }
+                    <a asp-action="List" asp-all-route-data="@routes"
+                       class="text-white">Name</a>
+            </th>
+            <th>
+                Tickets(s)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Ticket ticket in Model.Tickets)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-route-id="@ticket.TicketID"
+                       asp-route-slug="@ticket.Name">@ticket.Name</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{ 
+    routes = Model.CurrentRoute.Clone();
+    for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        routes.PageNumber = i;
+        <a asp-action="List" asp-all-route-data="@routes"
+           class="btn btn-primary">@i</a>
+    }
+}

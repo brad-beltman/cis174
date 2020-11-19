@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "CIS174-Beltman",
+      "defaultValue": "CIS174Beltman",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }
