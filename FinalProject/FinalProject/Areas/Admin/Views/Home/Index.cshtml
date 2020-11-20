@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ReportsDTO>
+﻿@model IndexViewModel
 
 @{
     ViewData["Title"] = "Report Management";
@@ -28,7 +28,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var report in Model) {
+@foreach (var report in Model.Reports) {
         <tr>
             <td>
                 @report.ReportType

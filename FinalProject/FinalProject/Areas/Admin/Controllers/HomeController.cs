@@ -9,6 +9,7 @@ using FinalProject.Data;
 using FinalProject.Models;
 using FinalProject.Areas.Admin.Models.DTOs;
 using FinalProject.Data.Repositories;
+using FinalProject.Areas.Admin.Models;
 
 namespace FinalProject.Areas.Admin.Controllers
 {
@@ -26,7 +27,7 @@ namespace FinalProject.Areas.Admin.Controllers
         }
 
         // GET: Admin/Home
-        public IActionResult Index()
+        public IActionResult Index(IndexViewModel model)
         {
             var reports = _reports.List(new QueryOptions<Report>
             {
@@ -41,13 +42,17 @@ namespace FinalProject.Areas.Admin.Controllers
                     Date = r.Date,
                     ReportType = r.ReportType.Name
                 });
-            return View(reports);
+
+            model.Reports = reports;
+
+            return View(model);
         }
 
         // GET: Admin/Home/Edit/5
         [HttpGet]
         public IActionResult Edit(int id)
         {
+            EditViewModel model = new EditViewModel();
             var report = _reports.List(new QueryOptions<Report>
             {
                 Includes = "ReportType",
@@ -63,10 +68,11 @@ namespace FinalProject.Areas.Admin.Controllers
                     Name = r.Name,
                     Author = r.Author,
                     Date = r.Date,
-                    ReportType = r.ReportType.Name
+                    ReportType = r.ReportType.Name,
+                    ReportTypeID = r.ReportTypeID
                 });
 
-            ViewBag.ReportTypes = _reportTypes.List(new QueryOptions<ReportType> { });
+            model.ReportTypes = _reportTypes.List(new QueryOptions<ReportType> { });
 
             if (report == null)
             {
@@ -74,8 +80,13 @@ namespace FinalProject.Areas.Admin.Controllers
             }
             else
             {
-                return View(report.First());
+                model.ID = report.First().ID;
+                model.Name = report.First().Name;
+                model.Author = report.First().Author;
+                model.Date = report.First().Date;
+                model.ReportTypeID = report.First().ReportTypeID;
             }
+            return View(model);
         }
 
         // POST: Admin/Home/Edit/5
@@ -83,10 +94,10 @@ namespace FinalProject.Areas.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("ID,ReportTypeID,Name,Author,Date")] ReportsDTO reportdto)
+        public IActionResult Edit(int id, [Bind("ID,ReportTypeID,Name,Author,Date")] EditViewModel model)
         {
             // Using the ReportsDTO so the full file contents aren't passed around each request
-            if (id != reportdto.ID)
+            if (id != model.ID)
             {
                 return NotFound();
             }
@@ -96,11 +107,11 @@ namespace FinalProject.Areas.Admin.Controllers
                 try
                 {
                     Report report = _reports.Get(id);
-                    report.ID = reportdto.ID;
-                    report.Name = reportdto.Name;
-                    report.Author = reportdto.Author;
-                    report.Date = reportdto.Date;
-                    report.ReportTypeID = reportdto.ReportTypeID;
+                    report.ID = model.ID;
+                    report.Name = model.Name;
+                    report.Author = model.Author;
+                    report.Date = model.Date;
+                    report.ReportTypeID = model.ReportTypeID;
                     // No need for the admin to be able to update the file contents or SearchIndex directly, so they are not included here
 
                     _reports.Save();
@@ -108,22 +119,23 @@ namespace FinalProject.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReportExists(reportdto.ID))
+                    if (!ReportExists(model.ID))
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw;
+                        TempData["fail_message"] = "The report was not updated successfully";
+                        return RedirectToAction(nameof(Index));
                     }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(reportdto);
+            return View(model);
         }
 
         // GET: Admin/Home/Delete/5
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int id, DeleteViewModel model)
         {
             var report = _reports.List(new QueryOptions<Report>
             {
@@ -149,8 +161,13 @@ namespace FinalProject.Areas.Admin.Controllers
             }
             else
             {
-                return View(report.First());
+                model.ID = report.First().ID;
+                model.Name = report.First().Name;
+                model.Author = report.First().Author;
+                model.Date = report.First().Date;
+                model.ReportType = report.First().ReportType;
             }
+            return View(model);
         }
 
         // POST: Admin/Home/Delete/5
@@ -168,7 +185,7 @@ namespace FinalProject.Areas.Admin.Controllers
             catch (Exception)
             {
                 TempData["fail_message"] = "The report was not deleted successfully";
-                throw;
+                return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Index));
         }

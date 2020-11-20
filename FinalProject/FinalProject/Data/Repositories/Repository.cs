@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FinalProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,18 @@ namespace FinalProject.Data.Repositories
             return query.FirstOrDefault();
         }
 
-        public virtual bool Exists(int id) => dbset.Any();
+        public virtual bool Exists(int id)
+        {
+            var e = dbset.Find(id);
+            if (e != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public virtual void Insert(T entity) => dbset.Add(entity);
         public virtual void Update(T entity) => dbset.Update(entity);

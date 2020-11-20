@@ -1,4 +1,4 @@
-﻿@model ReportsDTO
+﻿@model EditViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
                 <label asp-for="ReportTypeID" class="control-label"></label>
-                <select asp-for="ReportTypeID" asp-items="@(new SelectList(ViewBag.ReportTypes, "ReportTypeID", "Name"))" class="form-control">Please select</select>
+                <select asp-for="ReportTypeID" asp-items="@(new SelectList(Model.ReportTypes, "ReportTypeID", "Name"))" class="form-control">Please select</select>
                 <span asp-validation-for="ReportTypeID" class="text-danger"></span>
             </div>
             <div class="form-group">

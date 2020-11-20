@@ -1,16 +1,14 @@
-﻿using System;
+﻿using FinalProject.Areas.Admin.Models.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FinalProject.Models;
 
 namespace FinalProject.Areas.Admin.Models
 {
-    public class IndexViewModel
+    public class IndexViewModel : Report
     {
-        public int ReportID { get; set; }
-        public string Name { get; set; }
-        public string Author { get; set; }
-        public DateTime Date { get; set; }
-        public string ReportType { get; set; }
+        public IEnumerable<ReportsDTO> Reports { get; set; }
     }
 }
