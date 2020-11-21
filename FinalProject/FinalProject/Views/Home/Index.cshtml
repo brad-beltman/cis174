@@ -38,7 +38,7 @@
         @foreach (var report in Model)
         {
             <tr>
-                <td data-toggle="tooltip" title="@report.Headings">
+                <td data-toggle="tooltip" data-html="true" data-placement="bottom" title="@report.Headings">
                     @report.ReportType.Name
                 </td>
                 <td>

@@ -109,70 +109,56 @@ namespace FinalProject.OpenXML
             mem.Write(bytes, 0, (int)bytes.Length);
 
             // Open as a WordprocessingDocument so we can traverse document elements
-            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(mem, true))
+            try
             {
-                // Get the main portions of the doc to work with, as this is where the content we're interested in is stored
-                MainDocumentPart mainDoc = wordDoc.MainDocumentPart;
-                Body bodyDoc = mainDoc.Document.Body;
-
-                // Pull all text from each Paragraph element.  This is where most content will be stored
-                IEnumerable<Paragraph> paragraphs = bodyDoc.Descendants<Paragraph>();
-                foreach (Paragraph p in paragraphs)
+                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(mem, true))
                 {
-                    // Look in the Paragraph Style portion for headings so we can show these to the user without opening each report
-                    ParagraphStyleId style = p.Descendants<ParagraphStyleId>().FirstOrDefault();
-                    if (style != null)
+                    // Get the main portions of the doc to work with, as this is where the content we're interested in is stored
+                    MainDocumentPart mainDoc = wordDoc.MainDocumentPart;
+                    Body bodyDoc = mainDoc.Document.Body;
+
+                    // Pull all text from each Paragraph element.  This is where most content will be stored
+                    IEnumerable<Paragraph> paragraphs = bodyDoc.Descendants<Paragraph>();
+                    foreach (Paragraph p in paragraphs)
                     {
-                        if (style.Val.Value.Contains("Heading") && style.Val.Value != "TableHeading")
+                        // Look in the Paragraph Style portion for headings so we can show these to the user without opening each report
+                        ParagraphStyleId style = p.Descendants<ParagraphStyleId>().FirstOrDefault();
+                        if (style != null)
                         {
-                            StringBuilder headingValue = new StringBuilder();
-                            IEnumerable<Text> headingPortion = p.Descendants<Text>();
-                            foreach (Text t in headingPortion)
+                            if (style.Val.Value.Contains("Heading") && style.Val.Value != "TableHeading")
                             {
-                                if (!string.IsNullOrEmpty(t.Text))
+                                StringBuilder headingValue = new StringBuilder();
+                                IEnumerable<Text> headingPortion = p.Descendants<Text>();
+                                foreach (Text t in headingPortion)
                                 {
-                                    // This section adds a space indent for each level of heading, so it shows as a nice visual
-                                    // heirarchical view in the tool tip
-                                    if (style.Val.Value == "Heading2")
-                                    {
-                                        headingValue.Append(" " + t.Text);
-                                    }
-                                    else if (style.Val.Value == "Heading3")
-                                    {
-                                        headingValue.Append("  " + t.Text);
-                                    }
-                                    else if (style.Val.Value == "Heading4")
-                                    {
-                                        headingValue.Append("   " + t.Text);
-                                    }
-                                    else
+                                    if (!string.IsNullOrEmpty(t.Text))
                                     {
                                         headingValue.Append(t.Text);
                                     }
                                 }
-                            }
-                            headings.Add(headingValue.ToString());
-                        } 
-                    }
-                    StringBuilder stringBuilder = new StringBuilder();
-                    IEnumerable<Text> texts = p.Descendants<Text>();
-                    foreach (Text t in texts)
-                    {
-                        if (!string.IsNullOrEmpty(t.Text))
-                        {
-                            stringBuilder.Append(t.Text.ToLower());
-                        }
-                    }
-                    searchIndex.Add(stringBuilder.ToString());
-                }
 
-                // Pull all text from within table elements
-                IEnumerable<Table> tables = bodyDoc.Descendants<Table>();
-                foreach (Table table in tables)
-                {
-                    IEnumerable<Paragraph> tableparagraphs = table.Descendants<Paragraph>();
-                    foreach (Paragraph p in tableparagraphs)
-                    {
+
+                                if (!string.IsNullOrEmpty(headingValue.ToString()))
+                                {
+                                    // This section adds space indents for each level of heading, so it shows as a nice visual
+                                    // heirarchical view in the tool tip
+                                    if (style.Val.Value == "Heading2")
+                                    {
+                                        headingValue.Insert(0, "    ");
+                                    }
+                                    else if (style.Val.Value == "Heading3")
+                                    {
+                                        headingValue.Insert(0, "        ");
+                                    }
+                                    else if (style.Val.Value == "Heading4")
+                                    {
+                                        headingValue.Insert(0, "                ");
+                                    }
+
+                                    headings.Add(headingValue.ToString());
+                                }
+                            }
+                        }
                         StringBuilder stringBuilder = new StringBuilder();
                         IEnumerable<Text> texts = p.Descendants<Text>();
                         foreach (Text t in texts)
@@ -184,12 +170,39 @@ namespace FinalProject.OpenXML
                         }
                         searchIndex.Add(stringBuilder.ToString());
                     }
-                }
-            }
-            returnValues.Add("headings", string.Join(Environment.NewLine, headings));
-            returnValues.Add("content", string.Join(" ", searchIndex));
 
-            return returnValues;
+                    // Pull all text from within table elements
+                    IEnumerable<Table> tables = bodyDoc.Descendants<Table>();
+                    foreach (Table table in tables)
+                    {
+                        IEnumerable<Paragraph> tableparagraphs = table.Descendants<Paragraph>();
+                        foreach (Paragraph p in tableparagraphs)
+                        {
+                            StringBuilder stringBuilder = new StringBuilder();
+                            IEnumerable<Text> texts = p.Descendants<Text>();
+                            foreach (Text t in texts)
+                            {
+                                if (!string.IsNullOrEmpty(t.Text))
+                                {
+                                    stringBuilder.Append(t.Text.ToLower());
+                                }
+                            }
+                            searchIndex.Add(stringBuilder.ToString());
+                        }
+                    }
+                }
+                returnValues.Add("headings", string.Join(Environment.NewLine, headings));
+                returnValues.Add("content", string.Join(" ", searchIndex));
+
+                return returnValues;
+
+            }
+            catch (UriFormatException)  // For rare cases where a hyperlink within the doc is malformed
+            {
+
+                throw;
+            }
+            
         }
     }
 }
