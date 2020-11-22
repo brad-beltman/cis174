@@ -9,12 +9,14 @@ using FinalProject.Data;
 using FinalProject.Data.Repositories;
 using FinalProject.Models;
 using FinalProject.OpenXML;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace FinalProject.Controllers
+namespace FinalProject.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Area("Admin")]
     public class UploadController : Controller
     {

@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace FinalProject
 {
@@ -28,11 +29,23 @@ namespace FinalProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add identity services
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<DocSearchContext>()
+                .AddDefaultTokenProviders();
+
+            // Add session services
             services.AddMemoryCache();
             services.AddSession();
+
+            // MVC services
             services.AddControllersWithViews();
+
+            // Add dependency injection
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient(typeof(IReportOps), typeof(ReportOps));
+
+            // Configure the context to fetch the DB connection string
             services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DocSearchContext")));
         }
@@ -55,6 +68,7 @@ namespace FinalProject
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSession();
@@ -74,6 +88,9 @@ namespace FinalProject
                     name: "search",
                     pattern: "{controller=Home}/{action=Index}/{searchString?}");
             });
+
+            // Creates the admin role on startup if it doesn't exist, so we can access the admin area for the first time
+            DocSearchContext.CreateAdminRole(app.ApplicationServices).Wait();
         }
     }
 }

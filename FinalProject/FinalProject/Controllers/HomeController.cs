@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using FinalProject.OpenXML;
 using FinalProject.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FinalProject.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         // This is the file type expected for Word documents

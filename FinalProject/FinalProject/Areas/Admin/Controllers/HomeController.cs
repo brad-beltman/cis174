@@ -10,9 +10,11 @@ using FinalProject.Models;
 using FinalProject.Areas.Admin.Models.DTOs;
 using FinalProject.Data.Repositories;
 using FinalProject.Areas.Admin.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FinalProject.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Area("Admin")]
     public class HomeController : Controller
     {
