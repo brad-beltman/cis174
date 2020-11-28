@@ -30,7 +30,7 @@
                     </td>
                     <td>
                         <form method="post" asp-action="Delete" asp-route-id="@user.Id">
-                            <button type="submit" class="btn btn-outline-primary">Delete User</button>
+                            <button type="submit" class="btn btn-outline-danger">Delete User</button>
                         </form>
                     </td>
                     <td>
@@ -40,7 +40,7 @@
                     </td>
                     <td>
                         <form method="post" asp-action="RemoveFromAdmin" asp-route-id="@user.Id">
-                            <button type="submit" class="btn btn-outline-primary">Remove from Admin</button>
+                            <button type="submit" class="btn btn-outline-danger">Remove from Admin</button>
                         </form>
                     </td>
                 </tr>
@@ -70,7 +70,7 @@ else
                     <td>@role.Name</td>
                     <td>
                         <form method="post" asp-action="DeleteRole" asp-route-id="@role.Id">
-                            <button type="submit" class="btn btn-primary">Delete Role</button>
+                            <button type="submit" class="btn btn-outline-danger">Delete Role</button>
                         </form>
                     </td>
                 </tr>

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using FinalProject.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FinalProject.Controllers
 {
@@ -62,23 +64,26 @@ namespace FinalProject.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpGet]
         public ViewResult ChangePassword()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                User user = await userManager.FindByNameAsync(model.Username);
+                // Get the currently logged in user, don't let the user specify the account
+                User user = await userManager.GetUserAsync(User);
                 var result = await userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
                     TempData["message"] = "The password was successfully changed";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {

@@ -50,29 +50,36 @@ namespace FinalProject.Areas.Admin.Controllers
                     // The file should be 20MB or less
                     if (file.Length < 20000000)
                     {
-                        // Using this to dynamically get the file name without asking the user
-                        report.Name = Path.GetFileNameWithoutExtension(file.FileName);
-
-                        // Need to write the file as a memorystream and convert it to bytes before base64 encoding for storage
-                        byte[] bytes;
-                        using (var ms = new MemoryStream())
+                        if (Path.GetExtension(file.FileName) == ".docx")
                         {
-                            file.CopyTo(ms);
-                            bytes = ms.ToArray();
+                            // Using this to dynamically get the file name without asking the user
+                            report.Name = Path.GetFileNameWithoutExtension(file.FileName);
 
-                            Dictionary<string, string> content = _reportOps.CreateSearchIndex(bytes);
+                            // Need to write the file as a memorystream and convert it to bytes before base64 encoding for storage
+                            byte[] bytes;
+                            using (var ms = new MemoryStream())
+                            {
+                                file.CopyTo(ms);
+                                bytes = ms.ToArray();
 
-                            report.Headings = content["headings"];
-                            report.SearchIndex = content["content"];
+                                Dictionary<string, string> content = _reportOps.CreateSearchIndex(bytes);
+
+                                report.Headings = content["headings"];
+                                report.SearchIndex = content["content"];
+                            }
+
+                            // Convert to base64 for easy storage
+                            report.Content = Convert.ToBase64String(bytes);
+
+                            _reports.Insert(report);
+                            _reports.Save();
+
+                            TempData["message"] = "The report was uploaded successfully";
                         }
-
-                        // Convert to base64 for easy storage
-                        report.Content = Convert.ToBase64String(bytes);
-
-                        _reports.Insert(report);
-                        _reports.Save();
-
-                        TempData["message"] = "The report was uploaded successfully";
+                        else
+                        {
+                            TempData["fail_message"] = "The file must be of type docx";
+                        }
                     }
                     else
                     {

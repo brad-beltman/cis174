@@ -9,7 +9,10 @@
 </head>
 <body>
     <header>
-        <partial name="_NavPartialView" />
+        @if (User.Identity.IsAuthenticated)
+        {
+            <partial name="_NavPartialView" />
+        }
     </header>
     @if (TempData.ContainsKey("message"))
     {

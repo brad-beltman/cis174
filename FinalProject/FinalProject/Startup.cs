@@ -48,6 +48,8 @@ namespace FinalProject
             // Configure the context to fetch the DB connection string
             services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DocSearchContext")));
+            //services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
+            //    Configuration.GetConnectionString("AzureDB")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

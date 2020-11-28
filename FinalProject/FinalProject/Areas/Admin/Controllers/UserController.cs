@@ -24,7 +24,7 @@ namespace FinalProject.Areas.Admin.Controllers
             roleManager = roleMngr;
         }
         
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(UserViewModel model)
         {
             List<User> users = new List<User>();
             foreach (User user in userManager.Users)
@@ -32,11 +32,9 @@ namespace FinalProject.Areas.Admin.Controllers
                 user.RoleNames = await userManager.GetRolesAsync(user);
                 users.Add(user);
             }
-            UserViewModel model = new UserViewModel
-            {
-                Users = users,
-                Roles = roleManager.Roles
-            };
+
+            model.Users = users;
+            model.Roles = roleManager.Roles;
             return View(model);
         }
 
@@ -55,6 +53,10 @@ namespace FinalProject.Areas.Admin.Controllers
                         errorMessage += error.Description + " | "; 
                     }
                     TempData["fail_message"] = errorMessage;
+                }
+                else
+                {
+                    TempData["message"] = "User deleted successfully";
                 }
             }
             return RedirectToAction("Index");
@@ -75,6 +77,7 @@ namespace FinalProject.Areas.Admin.Controllers
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    TempData["message"] = "The user was added successfully";
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -85,6 +88,11 @@ namespace FinalProject.Areas.Admin.Controllers
                     }
                 }
             }
+            else
+            {
+                TempData["fail_message"] = "The information entered was not valid";
+            }
+
             return View(model);
         }
 
