@@ -18,7 +18,7 @@ namespace FinalProject.Tests
     public class Admin_UploadTests
     {
         [Fact]
-        public void Index_GET_ReturnViewModel()
+        public void Index_GET_ReturnViewResult()
         {
             // arrange
             var rep = new Mock<IRepository<Report>>();

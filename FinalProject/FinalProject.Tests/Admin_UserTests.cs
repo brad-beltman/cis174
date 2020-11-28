@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using FinalProject.Areas.Admin.Models;
 
 namespace FinalProject.Tests
 {
@@ -51,6 +52,54 @@ namespace FinalProject.Tests
         }
 
         [Fact]
+        public async void Add_POST_Successful()
+        {
+            // arrange
+            string expectedMessage = "The user was added successfully";
+            AddUserViewModel model = MockObjects.GetAddUserViewModel();
+            var userManager = MockObjects.GetUserManagerMock<User>();
+            userManager.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            var roleManager = MockObjects.GetRoleManagerMock<IdentityRole>().Object;
+            ITempDataDictionary tempData = MockObjects.GetMockTempData();
+            var controller = new UserController(userManager.Object, roleManager)
+            {
+                TempData = tempData
+            };
+
+            // act
+            var result = await controller.Add(model);
+            string actualMessage = controller.TempData["message"].ToString();
+
+            // assert
+            Assert.Equal(expectedMessage, actualMessage);
+            Assert.IsType<RedirectToActionResult>(result);
+        }
+
+        [Fact]
+        public async void Add_POST_Unsuccessful()
+        {
+            // arrange
+            AddUserViewModel model = MockObjects.GetAddUserViewModel();
+            var identityError = MockObjects.GetIdentityErrors();
+            var userManager = MockObjects.GetUserManagerMock<User>();
+            userManager.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Failed(identityError));
+            var roleManager = MockObjects.GetRoleManagerMock<IdentityRole>().Object;
+            ITempDataDictionary tempData = MockObjects.GetMockTempData();
+            var controller = new UserController(userManager.Object, roleManager)
+            {
+                TempData = tempData
+            };
+
+            // act
+            var result = await controller.Add(model);
+
+            // assert
+            // We should observe an error added to the ModelState
+            Assert.NotEqual(0, controller.ModelState.ErrorCount);
+            Assert.IsType<ViewResult>(result);
+        }
+
+        [Fact]
         public async void Delete_POST_Successful()
         {
             // arrange
@@ -66,11 +115,12 @@ namespace FinalProject.Tests
             };
 
             // act
-            var run = await controller.Delete(string.Empty) as ViewResult;
+            var result = await controller.Delete(string.Empty);
             string actualMessage = controller.TempData["message"].ToString();
 
             // assert
             Assert.Equal(expectedMessage, actualMessage);
+            Assert.IsType<RedirectToActionResult>(result);
         }
 
         [Fact]
@@ -88,11 +138,12 @@ namespace FinalProject.Tests
             };
 
             // act
-            var run = await controller.Delete(string.Empty) as ViewResult;
+            var result = await controller.Delete(string.Empty);
 
             // assert
             // A "fail_message" should be present if the operation fails
             Assert.NotNull(controller.TempData["fail_message"]);
+            Assert.IsType<RedirectToActionResult>(result);
         }
     }
 }

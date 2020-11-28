@@ -1,4 +1,5 @@
-﻿using FinalProject.Models;
+﻿using FinalProject.Areas.Admin.Models;
+using FinalProject.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -64,6 +65,13 @@ namespace FinalProject.Tests
                     new Mock<ILogger<RoleManager<TIdentityRole>>>().Object);
         }
 
+        public static IdentityError GetIdentityErrors()
+        {
+            IdentityError identityErrors = new IdentityError { Description = "mock"};
+
+            return identityErrors;
+        }
+
         // Mock Document Objects
         public static Mock<IFormFile> GetWordDoc(string length = "regular")
         {
@@ -116,6 +124,19 @@ namespace FinalProject.Tests
             file.Setup(_ => _.FileName).Returns(filename);
             file.Setup(_ => _.Length).Returns(ms.Length);
             return file;
+        }
+
+        // Mock ViewModels
+        public static AddUserViewModel GetAddUserViewModel()
+        {
+            AddUserViewModel model = new AddUserViewModel
+            {
+                Username = "mock",
+                Password = "MockPassword1!",
+                ConfirmPassword = "MockPassword1!"
+            };
+
+            return model;
         }
     }
 }
