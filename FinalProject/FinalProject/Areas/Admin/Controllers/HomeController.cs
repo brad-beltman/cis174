@@ -78,7 +78,8 @@ namespace FinalProject.Areas.Admin.Controllers
 
             if (report == null)
             {
-                return NotFound();
+                TempData["fail_message"] = "The given report was not found";
+                return RedirectToAction("Index", "Home");
             }
             else
             {

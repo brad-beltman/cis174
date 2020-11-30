@@ -22,10 +22,25 @@ namespace FinalProject.Tests
             var controller = new HomeController(rep.Object, rep_rt.Object);
 
             // act
-            var result = controller.Index(new IndexViewModel());
+            var result = controller.Index(new IndexViewModel { });
 
             // assert
             Assert.IsType<ViewResult>(result);
         }
+
+        //[Fact]
+        //public void Edit_GET_ValidID_ReturnViewModel()
+        //{
+        //    // arrange
+        //    var rep = new Mock<IRepository<Report>>();
+        //    var rep_rt = new Mock<IRepository<ReportType>>();
+        //    var controller = new HomeController(rep.Object, rep_rt.Object);
+
+        //    // act
+        //    var result = controller.Edit(0);
+
+        //    // assert
+        //    Assert.IsType<ViewResult>(result);
+        //}
     }
 }
