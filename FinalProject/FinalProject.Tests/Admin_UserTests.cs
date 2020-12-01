@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using FinalProject.Areas.Admin.Models;
+using FinalProject.Models.ViewModels;
+using FinalProject.Areas.Admin.Models.ViewModels;
 
 namespace FinalProject.Tests
 {

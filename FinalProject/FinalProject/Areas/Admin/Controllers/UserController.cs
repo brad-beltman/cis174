@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using FinalProject.Models;
 using FinalProject.Areas.Admin.Models;
+using FinalProject.Models.ViewModels;
+using FinalProject.Areas.Admin.Models.ViewModels;
 
 namespace FinalProject.Areas.Admin.Controllers
 {

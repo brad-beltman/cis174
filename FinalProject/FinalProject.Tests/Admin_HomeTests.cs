@@ -1,5 +1,6 @@
 ﻿using FinalProject.Areas.Admin.Controllers;
 using FinalProject.Areas.Admin.Models;
+using FinalProject.Areas.Admin.Models.ViewModels;
 using FinalProject.Data.Repositories;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using FinalProject.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using FinalProject.Models.ViewModels;
 
 namespace FinalProject.Controllers
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace FinalProject.Models
+namespace FinalProject.Models.ViewModels
 {
     public class DisplayViewModel
     {

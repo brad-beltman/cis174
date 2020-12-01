@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FinalProject.Models;
 
-namespace FinalProject.Areas.Admin.Models
+namespace FinalProject.Areas.Admin.Models.ViewModels
 {
     public class IndexViewModel : Report
     {
