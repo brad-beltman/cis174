@@ -31,8 +31,13 @@ namespace FinalProject.Areas.Admin.Controllers
             List<User> users = new List<User>();
             foreach (User user in userManager.Users)
             {
-                user.RoleNames = await userManager.GetRolesAsync(user);
                 users.Add(user);
+            }
+
+            // Need to do a 2nd foreach loop to avoid trying to make a new DB connection while the original connection is still open
+            foreach (User user in users)
+            {
+                user.RoleNames = await userManager.GetRolesAsync(user);
             }
 
             model.Users = users;

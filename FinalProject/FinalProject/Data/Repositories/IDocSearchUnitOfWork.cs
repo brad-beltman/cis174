@@ -8,6 +8,9 @@ namespace FinalProject.Data.Repositories
 {
     public interface IDocSearchUnitOfWork
     {
+        Repository<Report> Reports { get; }
+        Repository<ReportType> ReportTypes { get; }
+
         void Save();
     }
 }

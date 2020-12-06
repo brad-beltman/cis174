@@ -77,6 +77,15 @@ namespace FinalProject
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "",
+                    pattern: "{controller}/{action}/page/{pagenumber}/size/{pagesize}/sort/{sortfield}/{sortdirection}/filter/{ReportType}/searchString/{SearchString}"
+                    );
+                endpoints.MapAreaControllerRoute(
+                    name: "",
+                    areaName: "Admin",
+                    pattern: "Admin/{controller}/{action}/page/{pagenumber}/size/{pagesize}/sort/{sortfield}/{sortdirection}/filter/{ReportType}/searchString/{SearchString}"
+                    );
                 endpoints.MapAreaControllerRoute(
                     name: "admin",
                     areaName: "Admin",

@@ -1,0 +1,123 @@
+﻿@model ReportListViewModel
+
+@{
+    ViewData["Title"] = "Report Catalog";
+
+    // aliases to make paging, sorting, and filtering code shorter
+    RouteDictionary current = Model.CurrentRoute;
+    RouteDictionary routes = Model.CurrentRoute.Clone();
+}
+
+<h1>Report Catalog</h1>
+
+<div class="row">
+    <div class="col-9">
+        @*Search report contents form*@
+        <form asp-controller="Home" asp-action="List" asp-all-route-data="@routes">
+            <p>
+                Search Report Contents: <input type="text" name="searchString" />
+                <input type="submit" value="Search" /> <a asp-controller="Home" asp-action="List">Reset</a>
+            </p>
+        </form>
+
+        @* filter form *@
+        <form asp-action="Filter" asp-all-route-data="@routes" method="post" class="form-inline">
+            <label>Report Type: </label>
+            <select name="filter" class="form-control m-2"
+                    asp-items="@(new SelectList(
+        Model.ReportTypes, "ReportTypeID", "Name", current.ReportTypeFilter))">
+                <option value="@ReportsGridDTO.DefaultFilter">All</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary mr-2">Filter</button>
+            <button type="submit" class="btn btn-primary"
+                    name="clear" value="true">
+                Clear
+            </button>
+        </form>
+    </div>
+    <div class="col">
+        @* page-size form *@
+        <form asp-action="List" asp-all-route-data="@routes" class="form-inline">
+            <label>Page Size: </label>
+            <select name="pagesize" class="form-control m-2"
+                    asp-items="@(new SelectList(Model.PageSizes, current.PageSize))">
+            </select>
+
+            <button type="submit" class="btn btn-primary mr-2">Save</button>
+        </form>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped table-sm">
+    @* for each sortable table column, update the route dictionary with the field to sort by, and then
+        use that route dictionary and the current route to create route segments for sorting link *@
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @{ routes.SetSortAndDirection(nameof(Report.ReportType.Name), current); }
+                <a asp-action="List" asp-all-route-data="@routes"
+                   class="text-white">Report Type</a>
+            </th>
+            <th>
+                @{ routes.SetSortAndDirection(nameof(Report.Name), current); }
+                <a asp-action="List" asp-all-route-data="@routes"
+                   class="text-white">Name</a>
+            </th>
+            <th>
+                @{ routes.SetSortAndDirection(nameof(Report.Author), current); }
+                <a asp-action="List" asp-all-route-data="@routes"
+                   class="text-white">Author(s)</a>
+            </th>
+            <th>
+                @{ routes.SetSortAndDirection(nameof(Report.Date), current); }
+                <a asp-action="List" asp-all-route-data="@routes"
+                   class="text-white">Date</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var report in Model.Reports)
+        {
+        <tr>
+            <td data-toggle="tooltip" data-html="true" data-placement="bottom" title="@report.Headings">
+                @report.ReportType.Name
+            </td>
+            <td>
+                @report.Name
+            </td>
+            <td>
+                @report.Author
+            </td>
+            <td>
+                @report.Date.ToShortDateString()
+            </td>
+            <td>
+                <a asp-action="Display" asp-route-id="@report.ID" target="_blank">Display</a> |
+                <a asp-action="Download" asp-route-id="@report.ID">Download</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@* paging links *@
+@{
+    @* Reset the route dictionary to the current route values. This is necessary
+        to clear the changes made while creating the sorting links above. Clone so
+        don't overwrite current route segment values. *@
+    routes = Model.CurrentRoute.Clone();
+
+    @* update route dictionary with page number in 'i' and then use
+        updated route dictionary to create route segments for paging link.*@
+    for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        routes.PageNumber = i;
+    <a asp-action="List" asp-all-route-data="@routes"
+       class="btn btn-outline-primary @Nav.Active(i, current.PageNumber)">@i</a>
+    }
+}
+

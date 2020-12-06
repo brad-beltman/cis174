@@ -73,6 +73,9 @@ body {
 }
 
 /*Format the tooltips for readability*/
+.tooltip {
+    pointer-events: none;
+}
 .tooltip-inner {
     white-space: pre;
     max-width: none;

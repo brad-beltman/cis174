@@ -37,19 +37,6 @@ namespace FinalProject.Data.Repositories
             }
         }
 
-        //private Repository<Consultant> consultantData;
-        //public Repository<Consultant> Consultants
-        //{
-        //    get
-        //    {
-        //        if (consultantData == null)
-        //        {
-        //            consultantData = new Repository<Consultant>(context);
-        //        }
-        //        return consultantData;
-        //    }
-        //}
-
         public void Save() => context.SaveChanges();
     }
 }

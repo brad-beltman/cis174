@@ -7,6 +7,7 @@ namespace FinalProject.Data.Repositories
 {
     public interface IRepository<T> where T : class
     {
+        int Count { get; }
         IEnumerable<T> List(QueryOptions<T> options);
         T Get(int id);
         T Get(QueryOptions<T> options);
@@ -15,5 +16,6 @@ namespace FinalProject.Data.Repositories
         void Update(T entity);
         void Delete(T entity);
         void Save();
+        //int GetCount();
     }
 }

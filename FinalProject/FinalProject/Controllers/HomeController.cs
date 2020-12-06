@@ -7,13 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using FinalProject.Models;
 using FinalProject.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using FinalProject.OpenXML;
 using FinalProject.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using FinalProject.Models.ViewModels;
+using FinalProject.Models.DTOs;
+using FinalProject.Models.Grid;
+using FinalProject.Models.ExtensionMethods;
 
 namespace FinalProject.Controllers
 {
@@ -24,38 +26,91 @@ namespace FinalProject.Controllers
         private const string FileType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
         private IRepository<Report> _data { get; set; }
+        private IRepository<ReportType> _reportType { get; set; }
         private IReportOps _reportOps { get; set; }
 
-        public HomeController(IRepository<Report> rep, IReportOps reportOps)
+        public HomeController(IRepository<Report> rep, IRepository<ReportType> rt, IReportOps reportOps)
         {
             _data = rep;
+            _reportType = rt;
             _reportOps = reportOps;
         }
 
-        public ViewResult Index(string searchString)
+        public RedirectToActionResult Index(/*string searchString*/)
         {
-            if (!String.IsNullOrEmpty(searchString))
+            return RedirectToAction("List");
+            //if (!String.IsNullOrEmpty(searchString))
+            //{
+            //    var reports = _data.List(new QueryOptions<Report>
+            //    {
+            //        Includes = "ReportType",
+            //        WhereClauses = new WhereClauses<Report>
+            //        {
+            //            r => r.SearchIndex.Contains(searchString.ToLower())
+            //        },
+            //        OrderBy = r => r.Date
+            //    });
+            //    return View(reports);
+            //}
+            //else
+            //{
+            //    var reports = _data.List(new QueryOptions<Report>
+            //    {
+            //        Includes = "ReportType",
+            //        OrderBy = r => r.Date
+            //    });
+            //    return View(reports);
+        }
+
+        public ViewResult List(ReportsGridDTO values)
+        {
+            var builder = new ReportsGridBuilder(HttpContext.Session, values, defaultSortField: nameof(Report.Date));
+            builder.SetSearchRoute(values.SearchString);
+
+            var options = new ReportQueryOptions
             {
-                var reports = _data.List(new QueryOptions<Report>
+                Includes = "ReportType",
+                OrderByDirection = builder.CurrentRoute.SortDirection,
+                PageNumber = builder.CurrentRoute.PageNumber,
+                PageSize = builder.CurrentRoute.PageSize
+            };
+
+            options.SortFilter(builder);
+
+            var model = new ReportListViewModel
+            {
+                Reports = _data.List(options),
+                ReportTypes = _reportType.List(new QueryOptions<ReportType>
                 {
-                    Includes = "ReportType",
-                    WhereClauses = new WhereClauses<Report>
-                    {
-                        r => r.SearchIndex.Contains(searchString.ToLower())
-                    },
-                    OrderBy = r => r.Date
-                });
-                return View(reports);
+                    OrderBy = rt => rt.Name
+                }),
+                CurrentRoute = builder.CurrentRoute,
+                TotalPages = builder.GetTotalPages(_data.Count)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public RedirectToActionResult Filter(string[] filter, ReportsGridDTO values, bool clear = false)
+        {
+            // Added the ReportsGridDTO object above to pull the current search string
+            var builder = new ReportsGridBuilder(HttpContext.Session);
+
+            if (clear)
+            {
+                builder.ClearFilterSegments();
+                builder.SetSearchRoute(null);
             }
             else
             {
-                var reports = _data.List(new QueryOptions<Report>
-                {
-                    Includes = "ReportType",
-                    OrderBy = r => r.Date
-                });
-                return View(reports);
+                var reportTypes = _reportType.Get(filter[0].ToInt());
+                builder.LoadFilterSegments(filter, reportTypes);
+                builder.SetSearchRoute(values.SearchString);
             }
+            builder.SaveRouteSegments();
+
+            return RedirectToAction("List", builder.CurrentRoute);
         }
 
         public IActionResult Display(int id, DisplayViewModel model)

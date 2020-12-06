@@ -1,0 +1,66 @@
+﻿@model ReportListViewModel
+
+@{
+    ViewData["Title"] = "Report Catalog";
+
+    RouteDictionary current = Model.CurrentRoute;
+    RouteDictionary routes = Model.CurrentRoute.Clone();
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to DocSearch</h1>
+</div>
+
+<form asp-controller="Home" asp-action="Index" method="get">
+    <p>
+        Report Contents: <input type="text" name="searchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+<a asp-controller="Home" asp-action="Index">Reset</a>
+
+<form asp-action="Filter" method="post" class="form-inline">
+    <label>ReportType: </label>
+    <select name="filter" class="form-control m-2" asp-items="@(new SelectList(
+        Model.ReportTypes, "ReportTypeID", "Name", current.ReportTypeFilter))">
+        <option value="@ReportsGridDTO.DefaultFilter">All</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary mr-2">Filter</button>
+    <button type="submit" class="btn btn-primary" name="clear" value="true">Clear</button>
+</form>
+
+<table class="table table-bordered table-striped table-sm">
+    <tbody>
+        @foreach (var report in Model.Reports)
+        {
+            <tr>
+                <td data-toggle="tooltip" data-container="body" data-html="true" data-placement="bottom" title="@report.Headings">
+                    @report.ReportType.Name
+                </td>
+                <td>
+                    @report.Name
+                </td>
+                <td>
+                    @report.Author
+                </td>
+                <td>
+                    @report.Date.ToShortDateString()
+                </td>
+                <td>
+                    <a asp-action="Display" asp-route-id="@report.ID" target="_blank">Display</a> |
+                    <a asp-action="Download" asp-route-id="@report.ID">Download</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    routes = Model.CurrentRoute.Clone();
+    for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        routes.PageNumber = i;
+        <a asp-action="List" asp-all-route-date="@routes" class="btn btn-primary @Nav.Active(i, current.PageNumber)">@i</a>
+    }
+}
