@@ -62,6 +62,6 @@ namespace FinalProject.Models.Grid
             routes.SortField.EqualsNoCase(nameof(Report.Author));
 
         // search flag
-        public bool IsSearchString => routes.SearchString != null;
+        public bool IsSearchString => routes.SearchString != null && routes.SearchString != "none";
     }
 }
