@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity;
+using FinalProject.Api.Swagger;
 
 namespace FinalProject
 {
@@ -46,10 +47,13 @@ namespace FinalProject
             services.AddTransient(typeof(IReportOps), typeof(ReportOps));
 
             // Configure the context to fetch the DB connection string
-            services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
-                Configuration.GetConnectionString("DocSearchContext")));
             //services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
-            //    Configuration.GetConnectionString("AzureDB")));
+            //    Configuration.GetConnectionString("DocSearchContext")));
+            services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
+                Configuration.GetConnectionString("AzureDB")));
+
+            // Add Swashbuckle for Swagger documentation
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +76,18 @@ namespace FinalProject
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            // Needs to be after authentication to protect the Swagger UI from anonymous access
+            app.UseSwaggerAuthorized();
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Docs");
+            });
 
             app.UseSession();
 
