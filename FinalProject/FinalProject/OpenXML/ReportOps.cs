@@ -25,6 +25,7 @@ namespace FinalProject.OpenXML
             // These settings borrowed from https://raw.githubusercontent.com/EricWhiteDev/Open-Xml-PowerTools/vNext/OpenXmlPowerToolsExamples/WmlToHtmlConverter02/WmlToHtmlConverter02.cs
             WmlToHtmlConverterSettings settings = new WmlToHtmlConverterSettings()
             {
+                // Tweaked the CSS to fix some things, specifically the padding-top and overflow-wrap settings
                 AdditionalCss = "body { margin: 1cm auto; max-width: 20cm; padding: 0; padding-top: 70px; overflow-wrap: anywhere}",
                 PageTitle = "Display Report",
                 FabricateCssClasses = true,

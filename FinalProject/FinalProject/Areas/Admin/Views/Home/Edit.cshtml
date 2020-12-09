@@ -2,11 +2,15 @@
 
 @{
     ViewData["Title"] = "Edit";
+
+    // maintain the filtering/sorting from the route, so if the user clicks back it is not lost
+    RouteDictionary current = Model.CurrentRoute;
+    RouteDictionary routes = Model.CurrentRoute.Clone();
 }
 
 <h1>Edit</h1>
 
-<h4>Report</h4>
+<h1>Report</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -41,7 +45,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-area="" asp-controller="Home" asp-action="Index" asp-all-route-data="@routes">Back to List</a>
 </div>
 
 @section Scripts {

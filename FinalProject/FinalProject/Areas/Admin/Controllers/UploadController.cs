@@ -35,7 +35,7 @@ namespace FinalProject.Areas.Admin.Controllers
         [HttpGet]
         public ViewResult Index(UploadViewModel model)
         {
-            model.ReportTypes = _reportTypes.List(new QueryOptions<ReportType> { });
+            model.ReportTypes = _reportTypes.List(new QueryOptions<ReportType> { OrderBy = rt => rt.Name });
 
             return View(model);
         }

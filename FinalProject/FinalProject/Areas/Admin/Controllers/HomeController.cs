@@ -12,6 +12,8 @@ using FinalProject.Data.Repositories;
 using FinalProject.Areas.Admin.Models;
 using Microsoft.AspNetCore.Authorization;
 using FinalProject.Areas.Admin.Models.ViewModels;
+using FinalProject.Models.DTOs;
+using FinalProject.Models.Grid;
 
 namespace FinalProject.Areas.Admin.Controllers
 {
@@ -29,32 +31,22 @@ namespace FinalProject.Areas.Admin.Controllers
             _reportTypes = rt_rep;
         }
 
-        // GET: Admin/Home
-        public IActionResult Index(IndexViewModel model)
+        public RedirectToActionResult Index(ReportsGridDTO values)
         {
-            var reports = _reports.List(new QueryOptions<Report>
-            {
-                Includes = "ReportType",
-                OrderBy = r => r.Date
-            })
-                .Select(r => new ReportsDTO
-                {
-                    ID = r.ID,
-                    Name = r.Name,
-                    Author = r.Author,
-                    Date = r.Date,
-                    ReportType = r.ReportType.Name
-                });
+            // This code block makes sure the current route is always set
+            var builder = new ReportsGridBuilder(HttpContext.Session, values, defaultSortField: nameof(Report.Date));
+            builder.SetSearchRoute(values.SearchString);
 
-            model.Reports = reports;
-
-            return View(model);
+            return RedirectToAction("List", "Home", builder.CurrentRoute);
         }
 
         // GET: Admin/Home/Edit/5
         [HttpGet]
         public IActionResult Edit(int id)
         {
+            // Maintain the filtering/sorting/search for when the user clicks Save button or Back link
+            var builder = new ReportsGridBuilder(HttpContext.Session);
+
             EditViewModel model = new EditViewModel();
             var report = _reports.List(new QueryOptions<Report>
             {
@@ -76,6 +68,8 @@ namespace FinalProject.Areas.Admin.Controllers
                 });
 
             model.ReportTypes = _reportTypes.List(new QueryOptions<ReportType> { });
+
+            model.CurrentRoute = builder.CurrentRoute;
 
             if (report == null)
             {
@@ -100,6 +94,9 @@ namespace FinalProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, [Bind("ID,ReportTypeID,Name,Author,Date")] EditViewModel model)
         {
+            // Maintain sort/filter/search routing
+            var builder = new ReportsGridBuilder(HttpContext.Session);
+
             // Using the ReportsDTO so the full file contents aren't passed around each request
             if (id != model.ID)
             {
@@ -133,7 +130,7 @@ namespace FinalProject.Areas.Admin.Controllers
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("List", "Home", builder.CurrentRoute);
             }
             return View(model);
         }
@@ -141,6 +138,10 @@ namespace FinalProject.Areas.Admin.Controllers
         // GET: Admin/Home/Delete/5
         public IActionResult Delete(int id, DeleteViewModel model)
         {
+            // Maintain the filtering/sorting/search for when the user clicks Save button or Back link
+            var builder = new ReportsGridBuilder(HttpContext.Session);
+            model.CurrentRoute = builder.CurrentRoute;
+
             var report = _reports.List(new QueryOptions<Report>
             {
                 Includes = "ReportType",
@@ -179,6 +180,9 @@ namespace FinalProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            // Maintain sort/filter/search routing
+            var builder = new ReportsGridBuilder(HttpContext.Session);
+
             var report = _reports.Get(id);
             _reports.Delete(report);
             try
@@ -189,9 +193,8 @@ namespace FinalProject.Areas.Admin.Controllers
             catch (Exception)
             {
                 TempData["fail_message"] = "The report was not deleted successfully";
-                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("List", "Home", builder.CurrentRoute);
         }
 
         private bool ReportExists(int id)

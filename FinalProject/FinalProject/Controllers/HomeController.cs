@@ -36,36 +36,21 @@ namespace FinalProject.Controllers
             _reportOps = reportOps;
         }
 
-        public RedirectToActionResult Index(/*string searchString*/)
+        public RedirectToActionResult Index(ReportsGridDTO values)
         {
-            return RedirectToAction("List");
-            //if (!String.IsNullOrEmpty(searchString))
-            //{
-            //    var reports = _data.List(new QueryOptions<Report>
-            //    {
-            //        Includes = "ReportType",
-            //        WhereClauses = new WhereClauses<Report>
-            //        {
-            //            r => r.SearchIndex.Contains(searchString.ToLower())
-            //        },
-            //        OrderBy = r => r.Date
-            //    });
-            //    return View(reports);
-            //}
-            //else
-            //{
-            //    var reports = _data.List(new QueryOptions<Report>
-            //    {
-            //        Includes = "ReportType",
-            //        OrderBy = r => r.Date
-            //    });
-            //    return View(reports);
+            // This code block makes sure the current route is always set
+            var builder = new ReportsGridBuilder(HttpContext.Session, values, defaultSortField: nameof(Report.Date));
+            builder.SetSearchRoute(values.SearchString);
+
+            return RedirectToAction("List", builder.CurrentRoute);
         }
 
         public ViewResult List(ReportsGridDTO values)
         {
             var builder = new ReportsGridBuilder(HttpContext.Session, values, defaultSortField: nameof(Report.Date));
             builder.SetSearchRoute(values.SearchString);
+
+            builder.SaveRouteSegments();
 
             var options = new ReportQueryOptions
             {

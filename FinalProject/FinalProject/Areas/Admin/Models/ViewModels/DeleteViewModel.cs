@@ -1,5 +1,6 @@
 ﻿using FinalProject.Areas.Admin.Models.DTOs;
 using FinalProject.Models;
+using FinalProject.Models.Grid;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,5 +17,6 @@ namespace FinalProject.Areas.Admin.Models.ViewModels
         public DateTime Date { get; set; }
         [Display(Name = "Report Type")]
         public string ReportType { get; set; }
+        public RouteDictionary CurrentRoute { get; set; }
     }
 }

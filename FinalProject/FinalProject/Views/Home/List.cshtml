@@ -13,10 +13,10 @@
 <div class="row">
     <div class="col-9">
         @*Search report contents form*@
-        <form asp-controller="Home" asp-action="List" asp-all-route-data="@routes">
+        <form asp-controller="Home" asp-action="Index" asp-all-route-data="@routes">
             <p>
                 Search Report Contents: <input type="text" name="searchString" />
-                <input type="submit" value="Search" /> <a asp-controller="Home" asp-action="List">Reset</a>
+                <input type="submit" value="Search" /> @*<a asp-controller="Home" asp-action="List">Reset</a>*@
             </p>
         </form>
 
@@ -96,6 +96,12 @@
             <td>
                 <a asp-action="Display" asp-route-id="@report.ID" target="_blank">Display</a> |
                 <a asp-action="Download" asp-route-id="@report.ID">Download</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <text> | </text>
+                    <a asp-area="Admin" asp-controller="Home" asp-action="Edit" asp-route-id="@report.ID">Edit</a> <text> | </text>
+                    <a asp-area="Admin" asp-controller="Home" asp-action="Delete" asp-route-id="@report.ID">Delete</a>
+                }
             </td>
         </tr>
         }
