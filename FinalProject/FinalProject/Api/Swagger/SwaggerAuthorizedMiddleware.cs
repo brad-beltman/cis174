@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace FinalProject.Api.Swagger
 {
+    // Swashbuckle has no built in auth, this is to limit access to admin users
     public class SwaggerAuthorizedMiddleware
     {
         private readonly RequestDelegate _next;

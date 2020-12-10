@@ -32,12 +32,11 @@ namespace FinalProject.Api
 
         // POST: api/Upload/NewReport
         [HttpPost]
-        // [Consumes("application/json")]
         [Produces("application/json")]
         [Route("NewReport")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult NewReport([FromForm] [Bind(nameof(Report.Name), nameof(Report.ReportTypeID), nameof(Report.Date), nameof(Report.Content))] Report report, IFormFile file)
+        public IActionResult NewReport([Bind("ReportTypeID", "Date", "Content")] Report report, IFormFile file)
         {
             if (file != null)
             {
