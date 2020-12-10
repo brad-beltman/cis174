@@ -38,7 +38,7 @@ namespace FinalProject.Models
 
         [Required(ErrorMessage = "A file is required")]
         [Display(Name = "File")]
-        public string Content { get; set; }  // This holds the report contents
+        public byte[] Content { get; set; }  // This holds the report contents
 
         [BindNever]
         [JsonIgnore]

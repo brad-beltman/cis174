@@ -102,7 +102,7 @@ namespace FinalProject.Controllers
         {
             Report report = _data.Get(id);
 
-            byte[] bytes = Convert.FromBase64String(report.Content);
+            byte[] bytes = report.Content;
 
             model.html = _reportOps.ConvertToHTML(bytes);
 
@@ -113,7 +113,7 @@ namespace FinalProject.Controllers
         {
             Report report = _data.Get(id);
 
-            byte[] file = Convert.FromBase64String(report.Content);
+            byte[] file = report.Content;
 
             return File(file, FileType, report.Name + ".docx");
         }

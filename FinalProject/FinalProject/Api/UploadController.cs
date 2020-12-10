@@ -64,8 +64,7 @@ namespace FinalProject.Api
                                 report.SearchIndex = content["content"];
                             }
 
-                            // Convert to base64 for easy storage
-                            report.Content = Convert.ToBase64String(bytes);
+                            report.Content = bytes;
 
                             _reports.Insert(report);
                             _reports.Save();
