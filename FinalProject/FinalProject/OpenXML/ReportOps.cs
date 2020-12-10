@@ -26,13 +26,13 @@ namespace FinalProject.OpenXML
             WmlToHtmlConverterSettings settings = new WmlToHtmlConverterSettings()
             {
                 // Tweaked the CSS to fix some things, specifically the padding-top and overflow-wrap settings
-                AdditionalCss = "body { margin: 1cm auto; max-width: 20cm; padding: 0; padding-top: 70px; overflow-wrap: anywhere}",
+                AdditionalCss = "body { margin: 1cm auto; padding: 0; padding-top: 70px; overflow-wrap: anywhere}",
                 PageTitle = "Display Report",
                 FabricateCssClasses = true,
                 CssClassPrefix = "pt-",
                 RestrictToSupportedLanguages = false,
                 RestrictToSupportedNumberingFormats = false,
-                // This whole piece below is to handle images in the report
+                // This whole block below is to handle images in the report
                 ImageHandler = imageInfo =>
                 {
                     ++imageCounter;

@@ -33,7 +33,7 @@ namespace FinalProject.Models.Grid
             }
         }
 
-        public void SetSearchRoute(string? searchString)
+        public void SetSearchRoute(string searchString)
         {
             if (searchString == null)
             {
