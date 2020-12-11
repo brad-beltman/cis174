@@ -91,7 +91,7 @@ namespace FinalProject.Areas.Admin.Controllers
                     TempData["fail_message"] = "The file was empty";
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Upload");
         }
     }
 }

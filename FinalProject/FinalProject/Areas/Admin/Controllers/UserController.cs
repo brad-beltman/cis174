@@ -85,7 +85,7 @@ namespace FinalProject.Areas.Admin.Controllers
                 if (result.Succeeded)
                 {
                     TempData["message"] = "The user was added successfully";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "User");
                 }
                 else
                 {
