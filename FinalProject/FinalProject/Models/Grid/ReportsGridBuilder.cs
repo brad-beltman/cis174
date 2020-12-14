@@ -48,7 +48,7 @@ namespace FinalProject.Models.Grid
         public void ClearFilterSegments() => routes.ClearFilters();
 
         // filter flags
-        string defaultFilter = ReportsGridDTO.DefaultFilter;
+        readonly string defaultFilter = ReportsGridDTO.DefaultFilter;
         public bool IsFilterByReportType => routes.ReportTypeFilter != defaultFilter;
 
         // sort flags

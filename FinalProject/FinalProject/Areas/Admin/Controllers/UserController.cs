@@ -16,8 +16,8 @@ namespace FinalProject.Areas.Admin.Controllers
     [Area("Admin")]
     public class UserController : Controller
     {
-        private UserManager<User> userManager;
-        private RoleManager<IdentityRole> roleManager;
+        private readonly UserManager<User> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
         public UserController(UserManager<User> userMngr,
             RoleManager<IdentityRole> roleMngr)

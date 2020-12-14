@@ -13,7 +13,7 @@ namespace FinalProject.TagHelpers
     [HtmlTargetElement("my-paging-link")]
     public class PagingLinkTagHelper : TagHelper
     {
-        private LinkGenerator linkBuilder;
+        private readonly LinkGenerator linkBuilder;
         public PagingLinkTagHelper(LinkGenerator lg) => linkBuilder = lg;
 
         [ViewContext]

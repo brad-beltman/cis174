@@ -13,8 +13,8 @@ namespace FinalProject.Controllers
 {
     public class AccountController : Controller
     {
-        private UserManager<User> userManager;
-        private SignInManager<User> signInManager;
+        private readonly UserManager<User> userManager;
+        private readonly SignInManager<User> signInManager;
 
         public AccountController(UserManager<User> userMngr, SignInManager<User> signInMngr)
         {
