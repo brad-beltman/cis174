@@ -23,11 +23,7 @@
         @* filter form *@
         <form asp-action="Filter" asp-all-route-data="@routes" method="post" class="form-inline">
             <label>Report Type: </label>
-            <select name="filter" class="form-control m-2"
-                    asp-items="@(new SelectList(
-        Model.ReportTypes, "ReportTypeID", "Name", current.ReportTypeFilter))">
-                <option value="@ReportsGridDTO.DefaultFilter">All</option>
-            </select>
+            <vc:report-type-drop-down selected-value="@Model.CurrentRoute.ReportTypeFilter"></vc:report-type-drop-down>
 
             <button type="submit" class="btn btn-primary mr-2">Filter</button>
             <button type="submit" class="btn btn-primary"
