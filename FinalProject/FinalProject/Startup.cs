@@ -47,10 +47,10 @@ namespace FinalProject
             services.AddTransient(typeof(IReportOps), typeof(ReportOps));
 
             // Configure the context to fetch the DB connection string
-            services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
-                Configuration.GetConnectionString("DocSearchContext")));
             //services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
-            //    Configuration.GetConnectionString("AzureDB")));
+            //    Configuration.GetConnectionString("DocSearchContext")));
+            services.AddDbContext<DocSearchContext>(options => options.UseSqlServer(
+                Configuration.GetConnectionString("AzureDB")));
 
             // Add Swashbuckle for Swagger documentation
             services.AddSwaggerGen();
